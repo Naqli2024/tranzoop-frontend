@@ -1,0 +1,1 @@
+export const ApiUrl = "https://tranzoop.onrender.com/api/auth"
