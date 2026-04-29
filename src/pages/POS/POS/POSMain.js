@@ -4,12 +4,14 @@ import { RiSettings3Line } from "react-icons/ri";
 import Cookies from "js-cookie";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { posTyresItems } from "../../../helpers/POSSidebarData";
+import SignOutModal from "../Auth/SignOutModal";
 
 const POSMain = () => {
   const location = useLocation();
   const navigateTo = useNavigate();
   const storedTheme = Cookies.get("themeMode") || "dark";
   const [theme, setTheme] = useState("dark");
+  const [openSignOutModal, setOpenSignOutModal] = useState(false);
 
   useEffect(() => {
     setTheme(storedTheme);
@@ -17,6 +19,8 @@ const POSMain = () => {
 
   const isDark = theme === "dark";
   const basePath = "/pos";
+
+  const isSettingsActive = location.pathname === `${basePath}/settings` || location.pathname.startsWith(`${basePath}/settings`)
 
   return (
     <div className="pos-sidebar-layout">
@@ -46,11 +50,14 @@ const POSMain = () => {
           })}
         </div>
         <div className="pos-sidebar-footer">
-          <div className="pos-sidebar-link">
-            <RiSettings3Line size={18} />
-            Settings
-          </div>
-          <div className="pos-sidebar-link danger">
+          <button className={`pos-sidebar-link ${isSettingsActive ? "active" : ""}`} 
+          onClick={()=> {
+            navigateTo('/pos/settings')
+          }}>
+             <span className="pos-sidebar-link-icon"><RiSettings3Line size={18} /></span>
+             <span className="pos-sidebar-link-label">Settings</span>
+          </button>
+          <div className="pos-sidebar-link danger" onClick={()=>setOpenSignOutModal(true)}>
             <RiLogoutBoxRLine size={18} />
             Sign Out
           </div>
@@ -58,7 +65,10 @@ const POSMain = () => {
       </aside>
       <main className="pos-main-bar">
         <Outlet />
+        <div className="powered">Powered by TRANZOOP</div>
       </main>
+      {openSignOutModal && 
+      <SignOutModal open ={()=>setOpenSignOutModal(true)} onClose={()=>setOpenSignOutModal(false)} />}
     </div>
   );
 };

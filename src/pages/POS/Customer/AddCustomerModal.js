@@ -1,36 +1,141 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addCustomer, getAllCustomers } from "../../../redux/POS/CustomerSlice";
+import { toast } from "react-toastify";
 
-const AddCustomerModal = ({closeModal}) => {
+const AddCustomerModal = ({ closeModal,setCustomerData }) => {
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    companyName: "",
+    mobile: "",
+    gstNo: "",
+    address: "",
+    type: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const res = await dispatch(addCustomer(formData)).unwrap();
+      dispatch(getAllCustomers()).unwrap().then((response) => setCustomerData(response.data || []))
+      toast.success(res.message);
+      closeModal(false);
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-<div class="po-m-overlay">
-  <div class="po-m-box po-m-sm">
-    <div class="po-m-header">
-      <span>Add Party</span>
-      <button class="po-m-close" onClick={()=>closeModal(false)}>✕</button>
-    </div>
+    <div className="po-m-overlay">
+      <div className="po-m-box po-m-sm">
+        <div className="po-m-header">
+          <span>Add Customer</span>
+          <button className="po-m-close" onClick={() => closeModal(false)}>
+            ✕
+          </button>
+        </div>
+        <div className="po-m-grid po-m-2">
+          <div className="po-m-field">
+            <label>Full Name *</label>
+            <input
+              className="po-m-input"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="Name"
+            />
+          </div>
 
-    <div class="po-m-grid po-m-2">
-      <div class="po-m-field">
-        <label>Full Name *</label>
-        <input class="po-m-input" placeholder="Name" />
+          <div className="po-m-field">
+            <label>Mobile *</label>
+            <input
+              className="po-m-input"
+              type="tel"
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              placeholder="Phone"
+            />
+          </div>
+        </div>
+
+        <div className="po-m-field">
+          <label>Company Name</label>
+          <input
+            className="po-m-input"
+            name="companyName"
+            value={formData.companyName}
+            onChange={handleChange}
+            placeholder="Company"
+          />
+        </div>
+
+        <div className="po-m-field mt-2">
+          <label>GST Number</label>
+          <input
+            className="po-m-input"
+            name="gstNo"
+            value={formData.gstNo}
+            onChange={handleChange}
+            placeholder="GST No"
+          />
+        </div>
+
+        <div className="po-m-field my-2">
+          <label>Address</label>
+          <textarea
+            className="po-m-input"
+            rows="2"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Address"
+          />
+        </div>
+
+        <div className="po-m-field">
+          <label>Type</label>
+          <select
+            className="po-m-select"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option value="B2B">B2B</option>
+            <option value="B2C">B2C</option>
+          </select>
+        </div>
+
+        <div className="po-m-footer">
+          <button className="po-m-btn" onClick={() => closeModal(false)}>
+            Cancel
+          </button>
+
+          <button
+            className="po-m-btn po-m-primary"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </button>
+        </div>
       </div>
-      <div class="po-m-field">
-        <label>Mobile *</label>
-        <input class="po-m-input" type="tel" placeholder="Phone" />
-      </div>
     </div>
-
-    <div class="po-m-field">
-      <label>Address</label>
-      <textarea class="po-m-input" rows="2" placeholder="Address"></textarea>
-    </div>
-
-    <div class="po-m-footer">
-      <button class="po-m-btn" onClick={()=>closeModal(false)}>Cancel</button>
-      <button class="po-m-btn po-m-primary">Save</button>
-    </div>
-  </div>
-</div>
   );
 };
 

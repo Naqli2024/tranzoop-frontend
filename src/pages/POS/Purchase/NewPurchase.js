@@ -1,32 +1,95 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { getAllSuppliers } from "../../../redux/POS/SupplierSlice";
+import { addPurchase, getAllPurchase } from "../../../redux/POS/PurchaseSlice";
+import Loader from "../../../components/Loader";
 
-const NewPurchase = ({ backToList }) => {
+const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
   const fileRef = useRef();
   const [file, setFile] = useState(null);
+  const [openNewPurchase, setOpenNewPurchase] = useState(false);
+  const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
+  const [supplierData, setSupplierData] = useState([]);
+  const [supplierSearch, setSupplierSearch] = useState("");
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [invoiceNo, setInvoiceNo] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [items, setItems] = useState([
     {
       id: 1,
-      name: "Bridgestone Turanza T005",
-      category: "Tyres 4W",
-      size: "205/55 R16",
-      qty: 20,
-      rate: 5400,
-      gst: 28,
-    },
-    {
-      id: 2,
-      name: "Michelin Pilot Sport 4",
-      category: "Tyres 2W",
-      size: "225/45 R17",
-      qty: 12,
-      rate: 8200,
-      gst: 28,
-    },
+      name: "",
+      category: "",
+      size: "",
+      hsn: "",
+      sku: "",
+      qty: "",
+      rate: "",
+      gst: "",
+    }
   ]);
 
+  useEffect(() => {
+    dispatch(getAllSuppliers())
+      .unwrap()
+      .then((response) => {
+        console.log(response)
+        setSupplierData(response || []);
+      })
+      .catch((error) => {
+        toast.error(error);
+      })
+  }, [dispatch]);
+
+  const handleSave = async () => {
+    if (!selectedSupplier) return toast.info("Select supplier");
+    if (!invoiceNo) return toast.info("Enter invoice number");
+    if (!purchaseDate) return toast.info("Select purchase date");
+    if (!dueDate) return toast.info("Select due date");
+
+    const payload = {
+      supplierId: selectedSupplier._id,
+      supplierInvoiceNo: invoiceNo,
+      purchaseDate,
+      dueDate,
+      items: items.map((i) => ({
+        itemName: i.name,
+        category: i.category,
+        size: i.size,
+        hsn: i.hsn,
+        sku: i.sku,
+        quantity: i.qty,
+        rate: i.rate,
+        gst: i.gst,
+      })),
+    };
+
+    try {
+      setLoading(true)
+      const res = await dispatch(addPurchase(payload)).unwrap();
+      toast.success(res.message);
+      setLoading(false)
+      backToList();
+      dispatch(getAllPurchase())
+        .unwrap()
+        .then((response) => {
+          setPurchaseData(response?.purchases || []);
+        })
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  const filteredSuppliers = supplierData.filter((s) =>
+    s.name.toLowerCase().includes(supplierSearch.toLowerCase())
+  );
 
   const handleFileClick = () => {
     fileRef.current.click();
@@ -60,24 +123,23 @@ const NewPurchase = ({ backToList }) => {
         id: Date.now(),
         name: "",
         size: "",
-        qty: 1,
-        rate: 0,
-        gst: 18,
+        hsn: "",
+        sku: "",
+        qty: "",
+        rate: "",
+        gst: "",
       },
     ]);
   };
 
-  /* Delete Row */
   const deleteItem = (id) => {
     setItems(items.filter((i) => i.id !== id));
   };
 
-  /* Update Field */
   const updateItem = (id, field, value) => {
     setItems(items.map((i) => (i.id === id ? { ...i, [field]: value } : i)));
   };
 
-  /* Calculations */
   const subtotal = items.reduce((s, i) => s + i.qty * i.rate, 0);
 
   const gstTotal = items.reduce(
@@ -87,46 +149,140 @@ const NewPurchase = ({ backToList }) => {
 
   const grandTotal = subtotal + gstTotal;
 
+  useEffect(() => {
+    if (viewData) {
+      setSelectedSupplier({
+        _id: viewData.supplierId,
+        name: viewData.supplierName,
+        gstNumber: viewData.supplierGST,
+        mobile: viewData.supplierMobile,
+        email: viewData.supplierEmail,
+      });
+
+      setSupplierSearch(viewData.supplierName);
+      setInvoiceNo(viewData.supplierInvoiceNo);
+      setPurchaseDate(viewData.purchaseDate?.slice(0, 10));
+      setDueDate(viewData.dueDate?.slice(0, 10));
+
+      setItems(
+        viewData.items.map((i, index) => ({
+          id: index + 1,
+          name: i.itemName,
+          category: i.category,
+          size: i.size,
+          hsn: i.hsn,
+          sku: i.sku,
+          qty: i.quantity,
+          rate: i.rate,
+          gst: i.gst,
+        }))
+      );
+    }
+  }, [viewData]);
+
   return (
     <div className="purchase-container">
+      {loading && <Loader isLoading={loading} />}
       <div className="wo-ph">
         <span className="wo-ph-title">
-          <IoArrowBackOutline cursor={"pointer"} onClick={backToList} /> New
-          Purchase
+          <IoArrowBackOutline cursor={"pointer"} onClick={backToList} />
+          {isViewMode ? "Purchase Details" : "New Purchase"}
         </span>
-        <div className="wo-ph-actions">
-          <button class="btn btn-b btn-sm">Import</button>
-        </div>
+        {!isViewMode &&
+          <div className="wo-ph-actions">
+            <button class="btn btn-b btn-sm">Import</button>
+          </div>}
       </div>
       <div className="purchase-wrap">
-        {/* Top Section */}
         <div className="purchase-top">
           <div className="purchase-card purchase-grid-2">
-            <div>
-              <label className="purchase-label">Supplier Search</label>
+            <div style={{ position: "relative" }}>
+              <label className="purchase-label">Supplier Name</label>
               <input
                 className="purchase-input"
                 placeholder="Start typing supplier name..."
+                value={supplierSearch}
+                onChange={(e) => {
+                  setSupplierSearch(e.target.value);
+                  setShowSuggestions(true);
+                }}
+              />
+              {showSuggestions && supplierSearch && (
+                <div className="suggestion-box">
+                  {filteredSuppliers.length > 0 ? (
+                    filteredSuppliers.map((s) => (
+                      <div
+                        key={s._id}
+                        className="suggestion-item"
+                        onClick={() => {
+                          setSelectedSupplier(s);
+                          setSupplierSearch(s.name);
+                          setShowSuggestions(false);
+                        }}
+                      >
+                        {s.name}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="suggestion-item">No supplier found</div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="purchase-label">Supplier GST No</label>
+              <input
+                className="purchase-input"
+                value={selectedSupplier?.gstNumber || ""}
+                readOnly
               />
             </div>
             <div>
-              <label className="purchase-label">Supplier GSTIN</label>
+              <label className="purchase-label">Mobile</label>
               <input
                 className="purchase-input"
-                value="07ABCT1234Z1Z"
+                value={selectedSupplier?.mobile || ""}
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="purchase-label">Email</label>
+              <input
+                className="purchase-input"
+                value={selectedSupplier?.email || ""}
                 readOnly
               />
             </div>
           </div>
           <div className="purchase-card purchase-grid-2 small">
             <div>
-              <label className="purchase-label">Bill Number</label>
-              <input className="purchase-input" value="PUR-2024-01" />
+              <label className="purchase-label">Supplier Invoice Number</label>
+              <input
+                className="purchase-input"
+                disabled={isViewMode}
+                value={invoiceNo}
+                onChange={(e) => setInvoiceNo(e.target.value)}
+              />
             </div>
-
             <div>
-              <label className="purchase-label">Date</label>
-              <input className="purchase-input" type="date" />
+              <label className="purchase-label">Purchase Date</label>
+              <input
+                className="purchase-input"
+                disabled={isViewMode}
+                type="date"
+                value={purchaseDate}
+                onChange={(e) => setPurchaseDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="purchase-label">Due Date</label>
+              <input
+                className="purchase-input"
+                disabled={isViewMode}
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -137,6 +293,8 @@ const NewPurchase = ({ backToList }) => {
                 <tr>
                   <th>Tyre Brand & Model</th>
                   <th>Category</th>
+                  <th>SKU</th>
+                  <th>HSN Code</th>
                   <th>Size</th>
                   <th>Qty</th>
                   <th>Rate</th>
@@ -153,6 +311,7 @@ const NewPurchase = ({ backToList }) => {
                       <td>
                         <input
                           className="purchase-input"
+                          disabled={isViewMode}
                           value={i.name}
                           onChange={(e) =>
                             updateItem(i.id, "name", e.target.value)
@@ -162,6 +321,7 @@ const NewPurchase = ({ backToList }) => {
                       <td>
                         <input
                           className="purchase-input"
+                          disabled={isViewMode}
                           value={i.category}
                           onChange={(e) =>
                             updateItem(i.id, "category", e.target.value)
@@ -171,9 +331,20 @@ const NewPurchase = ({ backToList }) => {
                       <td>
                         <input
                           className="purchase-input"
-                          value={i.size}
+                          disabled={isViewMode}
+                          value={i.sku}
                           onChange={(e) =>
-                            updateItem(i.id, "size", e.target.value)
+                            updateItem(i.id, "sku", e.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="purchase-input"
+                          disabled={isViewMode}
+                          value={i.hsn}
+                          onChange={(e) =>
+                            updateItem(i.id, "hsn", e.target.value)
                           }
                         />
                       </td>
@@ -181,6 +352,7 @@ const NewPurchase = ({ backToList }) => {
                         <input
                           type="number"
                           className="purchase-input"
+                          disabled={isViewMode}
                           value={i.qty}
                           onChange={(e) =>
                             updateItem(i.id, "qty", +e.target.value)
@@ -191,6 +363,7 @@ const NewPurchase = ({ backToList }) => {
                         <input
                           type="number"
                           className="purchase-input"
+                          disabled={isViewMode}
                           value={i.rate}
                           onChange={(e) =>
                             updateItem(i.id, "rate", +e.target.value)
@@ -201,6 +374,7 @@ const NewPurchase = ({ backToList }) => {
                         <input
                           type="number"
                           className="purchase-input"
+                          disabled={isViewMode}
                           value={i.gst}
                           onChange={(e) =>
                             updateItem(i.id, "gst", +e.target.value)
@@ -210,23 +384,24 @@ const NewPurchase = ({ backToList }) => {
                       <td className="purchase-amount">
                         ₹{total.toLocaleString("en-IN")}
                       </td>
-                      <td>
+                      {!isViewMode && <td>
                         <button
                           className="purchase-del"
                           onClick={() => deleteItem(i.id)}
                         >
-                          <MdDeleteOutline size={20} color="red"/>
+                          <MdDeleteOutline size={20} color="red" />
                         </button>
-                      </td>
+                      </td>}
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
-          <button className="purchase-add" onClick={addItem}>
-            + Add Another Item
-          </button>
+          {!isViewMode &&
+            <button className="purchase-add" onClick={addItem}>
+              + Add Another Item
+            </button>}
           <div className="purchase-summary">
             <div className="purchase-row">
               <span>Subtotal</span>
@@ -243,66 +418,52 @@ const NewPurchase = ({ backToList }) => {
             </div>
           </div>
         </div>
-
-        {/* Bottom Section */}
-       <div className="purchase-bottom">
-
-      {/* Notes */}
-      <div className="purchase-card">
-        <label className="purchase-label">Purchase Notes</label>
-
-        <textarea
-          className="purchase-textarea"
-          placeholder="Add internal notes..."
-        />
-
-        {/* Upload Box */}
-        <div className="purchase-upload" onClick={handleFileClick}>
-          📎 Attach Supplier Invoice
-          <span>PDF, PNG up to 5MB</span>
-          <input
-            type="file"
-            ref={fileRef}
-            style={{ display: "none" }}
-            accept=".pdf,.png,.jpg,.jpeg"
-            onChange={handleFileChange}
-          />
-        </div>
-        {file && (
-          <div className="purchase-file-preview">
-            📄 {file.name}
+        <div className="purchase-bottom">
+          <div className="purchase-card">
+            <label className="purchase-label">Purchase Notes</label>
+            <textarea
+              className="purchase-textarea"
+              placeholder="Add internal notes..."
+            />
+            <div className="purchase-upload" onClick={handleFileClick}>
+              📎 Attach Supplier Invoice
+              <span>PDF, PNG up to 5MB</span>
+              <input
+                type="file"
+                ref={fileRef}
+                style={{ display: "none" }}
+                accept=".pdf,.png,.jpg,.jpeg"
+                onChange={handleFileChange}
+              />
+            </div>
+            {file && (
+              <div className="purchase-file-preview">
+                📄 {file.name}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-
-      {/* Summary */}
-      <div className="purchase-card purchase-summary">
-        <div className="purchase-row">
-          <span>Subtotal</span>
-          <span>₹ 2,06,400</span>
+          <div className="purchase-card purchase-summary">
+            <div className="purchase-row">
+              <span>Subtotal</span>
+              <span>₹ 2,06,400</span>
+            </div>
+            <div className="purchase-row">
+              <span>Input CGST (14%)</span>
+              <span>₹ 28,896</span>
+            </div>
+            <div className="purchase-row">
+              <span>Input SGST (14%)</span>
+              <span>₹ 28,896</span>
+            </div>
+            <div className="purchase-total">
+              <span>Grand Total</span>
+              <span>₹ 2,64,192</span>
+            </div>
+            <button className="purchase-btn" onClick={handleSave}>
+              💾 Save & Update Stock
+            </button>
+          </div>
         </div>
-        <div className="purchase-row">
-          <span>Input CGST (14%)</span>
-          <span>₹ 28,896</span>
-        </div>
-        <div className="purchase-row">
-          <span>Input SGST (14%)</span>
-          <span>₹ 28,896</span>
-        </div>
-        <div className="purchase-total">
-          <span>Grand Total</span>
-          <span>₹ 2,64,192</span>
-        </div>
-        <div className="purchase-inventory">
-          📈 Inventory Addition  
-          <small>32 New Units will be added</small>
-        </div>
-        <button className="purchase-btn">
-          💾 Save & Update Stock
-        </button>
-
-      </div>
-    </div>
       </div>
     </div>
   );

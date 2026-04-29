@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { IoEyeOffOutline } from "react-icons/io5";
 import { IoEyeOutline } from "react-icons/io5";
 import Loader from '../../../components/Loader';
@@ -9,10 +9,11 @@ import { adminLogin } from '../../../redux/Auth/AuthSlice';
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { key } = useParams();
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({ 
     username: "",
     password: "",
   });
@@ -78,7 +79,7 @@ const SignIn = () => {
         </div>
       <button className="sign-in-btn" onClick={handleSubmit}>Login →</button>
       <div className="sign-in-back-link" onClick={()=>navigateTo('/')}>← Choose different industry</div>
-      <div className="sign-in-new-account" onClick={()=>navigateTo('/sign-up')}>Don't have an account? <span>Create one</span></div>
+      {/* <div className="sign-in-new-account" onClick={()=>navigateTo(`/sign-up/${key}`)}>Don't have an account? <span>Create one</span></div> */}
       </div>
     </div>
     </div>

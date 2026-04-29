@@ -9,6 +9,9 @@ import {
   RiFilePaper2Line,
 } from "react-icons/ri";
 import { BiPurchaseTag } from "react-icons/bi";
+import { IoMdBusiness } from "react-icons/io";
+import { MdOutlinePayments } from "react-icons/md";
+import { LiaFileInvoiceSolid } from "react-icons/lia";
 
 export const posTyresItems = [
   {
@@ -27,6 +30,11 @@ export const posTyresItems = [
     label: "DASH",
   },
   {
+    path: "supplier",
+    icon: <IoMdBusiness size={15} />,
+    label: "SUPPLIER",
+  },
+  {
     path: "purchase",
     icon: <BiPurchaseTag size={15} />,
     label: "PURCHASE",
@@ -34,12 +42,12 @@ export const posTyresItems = [
   {
     path: "items",
     icon: <RiArchiveLine size={15} />,
-    label: "ITEMS",
+    label: "INVENTORY",
   },
   {
-    path: "party",
+    path: "customer",
     icon: <RiTeamLine size={15} />,
-    label: "PARTY",
+    label: "CUSTOMERS",
   },
   {
     path: "stock",
@@ -47,18 +55,23 @@ export const posTyresItems = [
     label: "STOCK",
   },
   {
-    path: "gst",
-    icon: <RiFilePaper2Line size={15} />,
-    label: "GST",
+    path: "payments",
+    icon: <MdOutlinePayments size={15} />,
+    label: "PAYMENTS",
   },
+  {
+    path: "invoices",
+    icon: <LiaFileInvoiceSolid size={15} />,
+    label: "INVOICES",
+  },
+  // {
+  //   path: "gst",
+  //   icon: <RiFilePaper2Line size={15} />,
+  //   label: "GST",
+  // },
   {
     path: "ledger",
     icon: <RiMoneyDollarCircleLine size={15} />,
     label: "P&L",
-  },
-  {
-    path: "voucher",
-    icon: <RiFileListLine size={15} />,
-    label: "VOUCHER",
   },
 ];

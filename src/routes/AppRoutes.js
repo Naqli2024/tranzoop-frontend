@@ -15,6 +15,11 @@ import Purchase from "../pages/POS/Purchase/Purchase";
 import Stock from "../pages/POS/Stock/Stock";
 import GST from "../pages/POS/GST/GST";
 import Ledger from "../pages/POS/Ledger/Ledger";
+import Supplier from "../pages/POS/Supplier/Supplier";
+import Payments from "../pages/POS/Payments/Payments";
+import Invoices from "../pages/POS/Invoices/Invoices";
+import Transport from "../pages/Transport/Transport";
+import Settings from "../pages/POS/Settings/Settings";
 
 
 const AppRoutes = () => {
@@ -24,7 +29,7 @@ const AppRoutes = () => {
     "/",
   ];
 
-    const hideHeaderRoutes = ["/","/sign-in","/sign-up"];
+    const hideHeaderRoutes = ["/","/sign-in/:key","/sign-up/:key","/transport"];
 
   const hideHeader = hideHeaderRoutes.some((route) =>
     matchPath({ path: route, end: true }, location.pathname)
@@ -37,19 +42,25 @@ const AppRoutes = () => {
     <Routes>
         {/* Public Routes */}
         <Route
+          path="/transport"
+          element={
+              <Transport />
+          }
+        />
+        <Route
           path="/"
           element={
               <HomePage />
           }
         />
         <Route
-          path="sign-in"
+          path="sign-in/:key"
           element={
               <SignIn />
           }
         />
         <Route
-          path="sign-up"
+          path="sign-up/:key"
           element={
               <SignUp />
           }
@@ -80,13 +91,19 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="supplier"
+          element={
+              <Supplier />
+          }
+        />
+        <Route
           path="items"
           element={
               <Items/>
           }
         />
         <Route
-          path="party"
+          path="customer"
           element={
               <Customer/>
           }
@@ -95,6 +112,18 @@ const AppRoutes = () => {
           path="stock"
           element={
               <Stock/>
+          }
+        />
+        <Route
+          path="payments"
+          element={
+              <Payments/>
+          }
+        />
+        <Route
+          path="invoices"
+          element={
+              <Invoices/>
           }
         />
         <Route
@@ -107,6 +136,12 @@ const AppRoutes = () => {
           path="ledger"
           element={
               <Ledger/>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+              <Settings/>
           }
         />
         </Route>

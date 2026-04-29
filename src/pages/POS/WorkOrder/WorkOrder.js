@@ -1,932 +1,554 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-const WO_STATUSES = ["pending", "inprog", "qc", "done", "delivered"];
-
-const tyreWorkOrders = [
-  {
-    id: "TYR-2604-01",
-    date: "10-Apr-26",
-    time: "09:15",
-    branch: "Sri Murugan Tyres — Coimbatore",
-    advisor: "Priya R.",
-    cust: "Suresh Kumar",
-    phone: "94210XXXXX",
-    email: "suresh@email.com",
-    address: "12, Gandhi Nagar, CBE",
-    vehicle: "TN 38 AX 9012",
-    make: "Honda Activa",
-    vehType: "2-Wheeler",
-    km: 24500,
-    fuel: "Petrol",
-    services: ["tyre_replace", "balancing"],
-    complaint: "Front tyre worn out, vehicle vibrating at high speed",
-    tyreItems: [
-      {
-        brand: "MRF",
-        size: "90/90-10",
-        qty: 1,
-        condition: "New",
-        serial: "MRF2604001",
-        position: "Front",
-      },
-    ],
-    addons: [
-      { name: "Tube TR87", qty: 1, price: 320 },
-      { name: "Valve Rubber", qty: 1, price: 40 },
-    ],
-    inspection: {
-      tyreWear: "Poor",
-      brakes: "OK",
-      alignment: "Minor Issue",
-      suspension: "OK",
-      airPressure: "Low",
-    },
-    tech: "Ramesh",
-    startTime: "09:30",
-    endTime: "10:15",
-    workDone:
-      "Replaced front tyre, fitted tube, balanced wheel, inflated to 32 PSI",
-    prodItems: [
-      { name: "MRF Zapper X 90/90-10", qty: 1, rate: 1800 },
-      { name: "Tube 90/90-10", qty: 1, rate: 320 },
-      { name: "Rubber Valve", qty: 1, rate: 40 },
-    ],
-    svcItems: [
-      { name: "Tyre Fitting", qty: 1, rate: 250 },
-      { name: "Wheel Balancing", qty: 1, rate: 400 },
-    ],
-    subtotal: 2810,
-    discount: 0,
-    gst: 505,
-    total: 2810,
-    payMode: "UPI",
-    payStatus: "paid",
-    custApproval: true,
-    photos: ["before_tyre", "after_tyre"],
-    staffNotes: "Customer happy, recommended rear tyre check in 2 months",
-    nextService: "10-Jun-26",
-    warrantyExpiry: "10-Apr-27",
-    aiSuggestions: [
-      "Rear tyre at 40% wear — suggest replacement in 60 days",
-      "Brake pads showing normal wear",
-    ],
-    bay: 1,
-    status: "done",
-    eta: "Ready",
-    totalEst: 2810,
-    note: "",
-  },
-  {
-    id: "TYR-2604-02",
-    date: "10-Apr-26",
-    time: "10:00",
-    branch: "Sri Murugan Tyres — Coimbatore",
-    advisor: "Selvan",
-    cust: "Rani Transport",
-    phone: "94450XXXXX",
-    email: "",
-    address: "Avinashi Road, CBE",
-    vehicle: "TN 11 BK 4532",
-    make: "Tata LPT 1616",
-    vehType: "Truck",
-    km: 87200,
-    fuel: "Diesel",
-    services: ["tyre_replace", "alignment"],
-    complaint: "4 tyres completely worn, pulling to left on highway",
-    tyreItems: [
-      {
-        brand: "MRF",
-        size: "10.00-20",
-        qty: 4,
-        condition: "New",
-        serial: "",
-        position: "All 4",
-      },
-    ],
-    addons: [
-      { name: "Flap 10.00-20", qty: 4, price: 480 },
-      { name: "Nitrogen Filling", qty: 4, price: 100 },
-    ],
-    inspection: {
-      tyreWear: "Critical",
-      brakes: "OK",
-      alignment: "Bad",
-      suspension: "Check Needed",
-      airPressure: "Very Low",
-    },
-    tech: "Murugan",
-    startTime: "10:30",
-    endTime: "",
-    workDone: "",
-    prodItems: [
-      { name: "MRF STEEL MUSCLE 10.00-20", qty: 4, rate: 18500 },
-      { name: "Flap 10.00-20", qty: 4, rate: 480 },
-    ],
-    svcItems: [
-      { name: "Tyre Fitting", qty: 4, rate: 250 },
-      { name: "Wheel Alignment", qty: 1, rate: 600 },
-      { name: "Nitrogen Filling", qty: 4, rate: 100 },
-    ],
-    subtotal: 79600,
-    discount: 2000,
-    gst: 14040,
-    total: 77600,
-    payMode: "BNPL",
-    payStatus: "pending",
-    custApproval: true,
-    photos: [],
-    staffNotes: "Check rear axle also — customer requested",
-    nextService: "10-Oct-26",
-    warrantyExpiry: "10-Apr-27",
-    aiSuggestions: [
-      "Rear axle suspension shows stress — recommend inspection",
-      "Schedule next alignment in 10,000 km",
-    ],
-    bay: 2,
-    status: "pending",
-    eta: "2 hrs",
-    totalEst: 75600,
-    note: "Check rear axle also",
-  },
-  {
-    id: "TYR-2604-03",
-    date: "10-Apr-26",
-    time: "11:30",
-    branch: "Sri Murugan Tyres — Coimbatore",
-    advisor: "Priya R.",
-    cust: "Prakash",
-    phone: "87540XXXXX",
-    email: "",
-    address: "RS Puram, CBE",
-    vehicle: "TN 59 CD 3421",
-    make: "Royal Enfield Classic 350",
-    vehType: "2-Wheeler",
-    km: 23000,
-    fuel: "Petrol",
-    services: ["tyre_replace", "puncture"],
-    complaint: "Rear tyre cracked, front tyre puncture",
-    tyreItems: [
-      {
-        brand: "Bridgestone",
-        size: "120/80-17",
-        qty: 1,
-        condition: "New",
-        serial: "BRG2604001",
-        position: "Rear",
-      },
-    ],
-    addons: [{ name: "Puncture Repair Kit", qty: 1, price: 150 }],
-    inspection: {
-      tyreWear: "Rear-Critical",
-      brakes: "Good",
-      alignment: "OK",
-      suspension: "OK",
-      airPressure: "Normal",
-    },
-    tech: "Selvan",
-    startTime: "11:45",
-    endTime: "12:15",
-    workDone:
-      "Replaced rear tyre, repaired front puncture, pressure check all wheels",
-    prodItems: [{ name: "Bridgestone Battlax 120/80-17", qty: 1, rate: 4200 }],
-    svcItems: [
-      { name: "Tyre Fitting", qty: 1, rate: 250 },
-      { name: "Puncture Repair", qty: 1, rate: 150 },
-    ],
-    subtotal: 4600,
-    discount: 0,
-    gst: 828,
-    total: 4600,
-    payMode: "Cash",
-    payStatus: "paid",
-    custApproval: true,
-    photos: ["before_rear"],
-    staffNotes: "",
-    nextService: "10-Oct-26",
-    warrantyExpiry: "10-Apr-27",
-    aiSuggestions: ["Front tyre at 55% wear — watch for next 5,000 km"],
-    bay: 3,
-    status: "qc",
-    eta: "10 mins",
-    totalEst: 4550,
-    note: "",
-  },
-  {
-    id: "TYR-2604-04",
-    date: "10-Apr-26",
-    time: "08:00",
-    branch: "Sri Murugan Tyres — Coimbatore",
-    advisor: "Selvan",
-    cust: "ABC Cabs",
-    phone: "98430XXXXX",
-    email: "abccabs@gmail.com",
-    address: "Race Course, CBE",
-    vehicle: "TN 07 AP 8821",
-    make: "Toyota Innova Crysta",
-    vehType: "Car/SUV",
-    km: 56000,
-    fuel: "Diesel",
-    services: ["alignment", "balancing"],
-    complaint: "Steering vibration at 80 kmph, slight pulling right",
-    tyreItems: [],
-    addons: [],
-    inspection: {
-      tyreWear: "Moderate",
-      brakes: "Good",
-      alignment: "Off",
-      suspension: "OK",
-      airPressure: "Normal",
-    },
-    tech: "Ramesh",
-    startTime: "08:15",
-    endTime: "09:00",
-    workDone:
-      "4-wheel alignment done, all 4 wheels balanced, pressure set to 33 PSI",
-    prodItems: [],
-    svcItems: [
-      { name: "Wheel Alignment (4W)", qty: 1, rate: 600 },
-      { name: "Wheel Balancing", qty: 4, rate: 400 },
-    ],
-    subtotal: 2200,
-    discount: 200,
-    gst: 360,
-    total: 2000,
-    payMode: "Card",
-    payStatus: "paid",
-    custApproval: true,
-    photos: ["alignment_report"],
-    staffNotes: "Fleet customer — add to loyalty. Due again at 66,000 km",
-    nextService: "10-Jul-26",
-    warrantyExpiry: "",
-    aiSuggestions: [
-      "Schedule tyre rotation at 60,000 km",
-      "Right front tyre wear uneven — realign in 10,000 km",
-    ],
-    bay: 4,
-    status: "done",
-    eta: "Ready",
-    totalEst: 2000,
-    note: "",
-  },
-];
-
-const WO_STATUS_ORDER = {
-  tyre: ["received", "inbay", "inprog", "fixing", "qc", "done"],
-  seafood: [
-    "received",
-    "cleaning",
-    "processing",
-    "freezing",
-    "packing",
-    "storage",
-    "dispatch",
-  ],
-};
-
-const statusTimelines = {
-  tyre: [
-    { icon: "🟡", label: "Job\nReceived", key: "received" },
-    { icon: "🔧", label: "Vehicle\nIn Bay", key: "inbay" },
-    { icon: "⚙️", label: "Work In\nProgress", key: "inprog" },
-    { icon: "🛞", label: "Tyre/Align\nFixing", key: "fixing" },
-    { icon: "✅", label: "Quality\nCheck", key: "qc" },
-    { icon: "🚗", label: "Ready for\nDelivery", key: "done" },
-  ],
-  seafood: [
-    { icon: "🟡", label: "Raw Mat.\nReceived", key: "received" },
-    { icon: "🧼", label: "Cleaning/\nWashing", key: "cleaning" },
-    { icon: "🔪", label: "Cutting/\nProcessing", key: "processing" },
-    { icon: "❄️", label: "Freezing", key: "freezing" },
-    { icon: "📦", label: "Packing", key: "packing" },
-    { icon: "🏬", label: "Cold\nStorage", key: "storage" },
-    { icon: "🚚", label: "Dispatch", key: "dispatch" },
-  ],
-};
-
-const BAYS = [
-  { num: "Bay 1", vehicle: "TN 37 CD 5678", occupied: true },
-  { num: "Bay 2", vehicle: "TN 37 AB 1234", occupied: true },
-  { num: "Bay 3", vehicle: "TN 37 EF 9012", occupied: true },
-  { num: "Bay 4", vehicle: null, occupied: false },
-];
-
-const STATUS_STEPS = [
-  "Check-in",
-  "Diagnosed",
-  "In Progress",
-  "QC Check",
-  "Ready",
-  "Delivered",
-];
-
-const statusClass = (s) => {
-  return (
-    {
-      pending: "ws-pending",
-      inprog: "ws-inprog",
-      qc: "ws-qc",
-      done: "ws-done",
-      delivered: "ws-delivered",
-    }[s] || ""
-  );
-};
+import AddWorkOrderModal from "./AddWorkOrderModal";
+import { getAllOrderByBusinessId, completeWorkOrder, deleteByWorkOrder, assignBay } from "../../../redux/POS/WorkOrderSlice";
+import { useDispatch } from "react-redux";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import WorkOrderDetails from "./WorkOrderDetails";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
+import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlinePayments } from "react-icons/md";
+import { createBill } from "../../../redux/POS/BillSlice";
+import SelectPaymentModal from "../Payments/SelectPaymentModal";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import DiscountModal from "./DiscountModal";
+import BillModal from "../POS/BillModal";
 
 export default function WorkOrder({ industry = "tyre" }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [search, setSearch] = useState("");
+  const [openAddWorkerOrderModal, setOpenAddWorkerOrderModal] = useState(false);
+  const [woData, setWoData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+  const dispatch = useDispatch();
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [woNumber, setWoNumber] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [dateFilter, setDateFilter] = useState("");
+  const [vehicleFilter, setVehicleFilter] = useState("");
+  const [serviceFilter, setServiceFilter] = useState("");
+  const [openWoDetails, setOpenWoDetails] = useState(false);
+  const [selectedWO, setSelectedWO] = useState(null);
+  const [assigningBayId, setAssigningBayId] = useState(null);
+  const [bayInput, setBayInput] = useState("");
+  const [openDiscount, setOpenDiscount] = useState(false);
+  const [openBillModal, setOpenBillModal] = useState(false);
+  const [billData, setBillData] = useState(null);
 
-  const INDUSTRY_LABELS = {
-    tyre: { title: "🔧 Work Orders", badge: "JOBS" },
-    seafood: { title: "🦐 Batch Orders", badge: "BATCHES" },
-    restaurant: { title: "🍽 Kitchen Orders", badge: "KOT" },
-    supermarket: { title: "🛒 Pending Orders", badge: "QUEUE" },
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getAllOrderByBusinessId())
+      .unwrap()
+      .then((response) => {
+        const list = Array.isArray(response?.data) ? response.data : [];
+        setWoData(list);
+      })
+      .catch((error) => {
+        toast.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [dispatch]);
+
+  const handleCompleteToggle = async (wo) => {
+    if (wo.status === "COMPLETED") return;
+    try {
+      const payload = {};
+      await dispatch(completeWorkOrder({ orderId: wo.woNumber, payload }))
+        .unwrap()
+        .then((response) => {
+          setWoData((prev) =>
+            prev.map((item) =>
+              item._id === wo._id
+                ? {
+                  ...item,
+                  isActive: true,
+                  status: "COMPLETED",
+                }
+                : item
+            )
+          );
+          toast.success(response.message);
+          dispatch(getAllOrderByBusinessId())
+            .unwrap()
+            .then((res) => setWoData(res.data || []));
+        })
+    } catch (err) {
+      toast.error(err);
+    }
   };
 
-  const meta = INDUSTRY_LABELS[industry] || INDUSTRY_LABELS.tyre;
+  const handleDelete = async () => {
+    if (!woNumber) return;
+    try {
+      setDeleteLoading(true);
+      const response = await dispatch(deleteByWorkOrder({ orderId: woNumber }))
+        .unwrap();
+      dispatch(getAllOrderByBusinessId())
+        .unwrap()
+        .then((response) => {
+          setWoData(response.data || []);
+        })
+      toast.success(response.message);
+      setDeleteModal(false);
+      setWoNumber(null);
+
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleAssignBay = async (orderId) => {
+    if (!bayInput) return toast.error("Enter bay number");
+
+    try {
+      const payload = {
+        bay: `Bay-${bayInput}`,
+      };
+
+      const response = await dispatch(
+        assignBay({ orderId, payload })
+      ).unwrap();
+
+      toast.success(response.message);
+      const res = await dispatch(getAllOrderByBusinessId()).unwrap();
+      setWoData(res.data || []);
+      setAssigningBayId(null);
+      setBayInput("");
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const filteredData = woData.filter((wo) => {
+    const searchText = search.toLowerCase();
+
+    const matchesSearch =
+      wo.woNumber?.toLowerCase().includes(searchText) ||
+      wo.vehicle?.registrationNo?.toLowerCase().includes(searchText) ||
+      wo.vehicle?.brandModel?.toLowerCase().includes(searchText) ||
+      wo.advisor?.toLowerCase().includes(searchText);
+
+    const matchesVehicle =
+      !vehicleFilter || wo.vehicle?.vehicleType === vehicleFilter;
+
+    const matchesService =
+      !serviceFilter ||
+      wo.services?.some((s) => s.name === serviceFilter);
+
+    const matchesDate = (() => {
+      if (!dateFilter) return true;
+
+      const created = new Date(wo.createdAt);
+      const now = new Date();
+
+      if (dateFilter === "Today") {
+        return created.toDateString() === now.toDateString();
+      }
+
+      if (dateFilter === "This Week") {
+        const weekAgo = new Date();
+        weekAgo.setDate(now.getDate() - 7);
+        return created >= weekAgo;
+      }
+
+      if (dateFilter === "This Month") {
+        return (
+          created.getMonth() === now.getMonth() &&
+          created.getFullYear() === now.getFullYear()
+        );
+      }
+
+      if (dateFilter === "This Year") {
+        return created.getFullYear() === now.getFullYear();
+      }
+
+      return true;
+    })();
+
+    return matchesSearch && matchesVehicle && matchesService && matchesDate;
+  });
+
+  const stats = {
+    pending: 0,
+    progress: 0,
+    completed: 0,
+  };
+
+  woData.forEach((wo) => {
+    if (wo.status === "CREATED") stats.pending++;
+    else if (wo.status === "COMPLETED") stats.completed++;
+    else stats.progress++;
+  });
+
+  const TOTAL_BAYS = 4;
+
+  const dynamicBays = Array.from({ length: TOTAL_BAYS }, (_, i) => {
+    const bayName = `Bay-${i + 1}`;
+
+    const assignedWO = woData.find(
+      (wo) => wo.bay === bayName && wo.bayStatus === "OCCUPIED"
+    );
+
+    return {
+      num: bayName,
+      occupied: !!assignedWO,
+      vehicle: assignedWO?.vehicle?.registrationNo || null,
+    };
+  });
 
   return (
-    <div className="wo-wrap">
-      <div className="wo-ph">
-        <span className="wo-ph-title">
-          🔧 Tyre Work Orders <span className="wo-ph-badge">5 Active</span>
-        </span>
-
-        <div className="wo-ph-actions">
-          <select className="sel">
-            <option value="">All Orders</option>
-            <option value="pending">Pending</option>
-            <option value="inprog">In Progress</option>
-            <option value="qc">QC</option>
-            <option value="done">Done</option>
-          </select>
-
-          <button className="btn btn-p">+ New Work Order</button>
-        </div>
-      </div>
-
-      <div className="wo-mg wo-mg-4">
-        <div className="wo-mc wo-mc-pending">
-          <div className="wo-mc-l">Pending</div>
-          <div className="wo-mc-v">5</div>
-          <div className="wo-mc-h">Awaiting bay</div>
-        </div>
-
-        <div className="wo-mc wo-mc-progress">
-          <div className="wo-mc-l">In Progress</div>
-          <div className="wo-mc-v">6</div>
-          <div className="wo-mc-h">Active work</div>
-        </div>
-
-        <div className="wo-mc wo-mc-qc">
-          <div className="wo-mc-l">Quality Check</div>
-          <div className="wo-mc-v">7</div>
-          <div className="wo-mc-h">Pre-delivery</div>
-        </div>
-
-        <div className="wo-mc wo-mc-done">
-          <div className="wo-mc-l">Completed</div>
-          <div className="wo-mc-v">8</div>
-          <div className="wo-mc-h">Today</div>
-        </div>
-      </div>
-      <div className="wo-bay-heading">🏭 Workshop Bay Map</div>
-      <div className="wo-bay-map">
-        {BAYS.map((bay) => (
-          <div
-            key={bay.num}
-            className={`wo-bay${bay.occupied ? " occupied" : " available"}`}
-          >
-            <div className="wo-bay-num">{bay.num}</div>
-            <div className="wo-bay-status">
-              {bay.occupied ? "🔧 In Service" : "✅ Available"}
+    <>
+      {openWoDetails
+        ? (<WorkOrderDetails backToList={() => setOpenWoDetails(false)} wo={selectedWO} />)
+        : (<div className="wo-wrap">
+          <div className="wo-ph">
+            <span className="wo-ph-title">
+              🔧 Tyre Work Orders <span className="wo-ph-badge">5 Active</span>
+            </span>
+            <div className="wo-ph-actions">
+              <button
+                className="btn btn-p"
+                onClick={() => setOpenAddWorkerOrderModal(true)}
+              >
+                + New Work Order
+              </button>
             </div>
-            {bay.vehicle && <div className="wo-bay-vehicle">{bay.vehicle}</div>}
           </div>
-        ))}
-      </div>
-      <div className="wo-bay-heading">📋 Active Work Orders</div>
-      {/* Work Order Cards */}
-      <div className="wo-card-container">
-        {tyreWorkOrders.map((wo) => {
-          const stl = statusTimelines.tyre;
-          const order = WO_STATUS_ORDER.tyre;
-          const si = order.indexOf(wo.status);
-          const svcLabels = {
-            tyre_replace: "🛞 Tyre Replacement",
-            alignment: "🎯 Alignment",
-            balancing: "⚖ Balancing",
-            puncture: "🔧 Puncture Repair",
-            rotation: "🔄 Rotation",
-            nitrogen: "💨 Nitrogen Filling",
-            general: "🔍 General Check",
-          };
-          const inspColor = (v) =>
-            v === "OK" || v === "Good" || v === "Normal"
-              ? "is-ok"
-              : v === "Bad" || v === "Critical" || v === "Very Low"
-                ? "is-bad"
-                : "is-warn";
-          const inspIcon = (k) =>
-            ({
-              tyreWear: "🛞",
-              brakes: "🛑",
-              alignment: "🎯",
-              suspension: "🔩",
-              airPressure: "💨",
-            })[k] || "🔍";
-          const inspLabel = (k) =>
-            ({
-              tyreWear: "Tyre Wear",
-              brakes: "Brakes",
-              alignment: "Alignment",
-              suspension: "Suspension",
-              airPressure: "Air PSI",
-            })[k] || k;
-          const statusColors = {
-            pending: "ws-pending",
-            inbay: "ws-inprog",
-            inprog: "ws-inprog",
-            fixing: "ws-inprog",
-            qc: "ws-qc",
-            done: "ws-done",
-            delivered: "ws-delivered",
-          };
-          const prodTotal = (wo.prodItems || []).reduce(
-            (s, i) => s + i.qty * i.rate,
-            0,
-          );
-          const svcTotal = (wo.svcItems || []).reduce(
-            (s, i) => s + i.qty * i.rate,
-            0,
-          );
-          const addonTotal = (wo.addons || []).reduce(
-            (s, a) => s + a.qty * a.price,
-            0,
-          );
-          const gstAmt =
-            wo.gst || Math.round((prodTotal + svcTotal + addonTotal) * 0.18);
-          return (
-            <div class="wo-card-full">
-              <div class="wo-card-hdr">
-                <span class="wo-id">{wo.id}</span>
-                <span
-                  class={`wo-status ${statusColors[wo.status] || "ws-pending"}`}
-                >
-                  {wo.status.toUpperCase()}
-                </span>
-                <span className="wo-card-hdr-text">🏪 {wo.branch}</span>
-                <span className="wo-card-hdr-text">
-                  👤 Advisor: ${wo.advisor}
-                </span>
-                <span className="wo-card-hdr-text">
-                  📅 {wo.date} ${wo.time}
-                </span>
-                <span className="wo-card-hdr-amount">
-                  ₹{(wo.total || wo.totalEst || 0).toLocaleString("en-IN")}
-                </span>
-                {wo.status !== "done" ? (
-                  <button class="btn btn-p btn-sm">→ Next Stage</button>
-                ) : (
-                  <button class="btn btn-g btn-sm">⭐ Invoice</button>
-                )}
-                <button class="btn btn-sm">📋 Full View</button>
+
+          <div className="wo-mg wo-mg-3">
+            <div className="wo-mc wo-mc-pending">
+              <div className="wo-mc-l">Pending</div>
+              <div className="wo-mc-v">{stats.pending}</div>
+              <div className="wo-mc-h">Awaiting bay</div>
+            </div>
+
+            <div className="wo-mc wo-mc-progress">
+              <div className="wo-mc-l">In Progress</div>
+              <div className="wo-mc-v">{stats.progress}</div>
+              <div className="wo-mc-h">Active work</div>
+            </div>
+            <div className="wo-mc wo-mc-done">
+              <div className="wo-mc-l">Completed</div>
+              <div className="wo-mc-v">{stats.completed}</div>
+              <div className="wo-mc-h">Today</div>
+            </div>
+          </div>
+          <div className="wo-bay-heading">🏭 Workshop Bay Map</div>
+          <div className="wo-bay-map">
+            {dynamicBays.map((bay) => (
+              <div
+                key={bay.num}
+                className={`wo-bay${bay.occupied ? " occupied" : " available"}`}
+              >
+                <div className="wo-bay-num">{bay.num}</div>
+                <div className="wo-bay-status">
+                  {bay.occupied ? "🔧 In Service" : "✅ Available"}
+                </div>
+                {bay.vehicle && <div className="wo-bay-vehicle">{bay.vehicle}</div>}
               </div>
+            ))}
+          </div>
+          <div className="wo-bay-heading">📋 Active Work Orders</div>
+          <div class="items-filter-bar">
+            <div className="items-input">
+            <input
+              class="items-inp"
+              style={{ flex: "1", maxWidth: "300px" }}
+              placeholder="Search…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            </div>
+            <div className="d-flex gap-2">
+              <select className="sel" onChange={(e) => setDateFilter(e.target.value)}>
+                <option value="">All</option>
+                <option value="Today">Today</option>
+                <option value="This Week">This Week</option>
+                <option value="This Month">This Month</option>
+                <option value="This Year">This Year</option>
+              </select>
+              <select className="sel" onChange={(e) => setVehicleFilter(e.target.value)}>
+                <option value="">Vehicle Type</option>
+                <option>2-Wheeler (Scooter)</option>
+                <option>2-Wheeler (Motorcycle)</option>
+                <option>Car / Sedan</option>
+                <option>SUV / MUV</option>
+                <option>Truck / LCV</option>
+                <option>Bus / HCV</option>
+                <option>Tractor / Agricultural</option>
+                <option>3-Wheeler</option>
+              </select>
+              <select className="sel" onChange={(e) => setServiceFilter(e.target.value)}>
+                <option value="">Service Type</option>
+                <option>Tyre Replacement</option>
+                <option>Wheel Alignment</option>
+                <option>Wheel Balancing</option>
+                <option>Puncture Repair</option>
+                <option>Rotation</option>
+                <option>Nitrogen Filling</option>
+                <option>General Check</option>
+                <option>other</option>
+              </select>
+            </div>
+          </div>
+          <div class="items-table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>WO Number</th>
+                  <th>Vehicle</th>
+                  <th>Reg No</th>
+                  <th>Vehicle Type</th>
+                  <th>Services</th>
+                  <th>Tyres</th>
+                  <th>Advisor</th>
+                  <th>Status</th>
+                  <th>Complete Order</th>
+                  <th>Date</th>
+                  <th>Bay</th>
+                  <th>Bill</th>
+                  <th style={{ textAlign: "center" }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.length > 0 ? (
+                  filteredData.map((wo, index) => {
+                    const allServices = [
+                      ...(wo.services || []),
+                      ...(wo.otherService?.description
+                        ? [
+                          {
+                            name: wo.otherService.description,
+                            price: wo.otherService.price,
+                            gst: wo.otherService.gst,
+                          },
+                        ]
+                        : []),
+                    ];
 
-              <div class="wo-card-body">
-                <div className="wo-cards-grid">
-                  {/* CUSTOMER */}
-                  <div>
-                    <div class="wo-sec">
-                      <div class="wo-sec-title">👤 Customer</div>
-                      <div class="wo-grid-2">
-                        <div class="wo-field">
-                          <div class="wo-label">Name</div>
-                          <div class="wo-value">{wo.cust}</div>
-                        </div>
-                        <div class="wo-field">
-                          <div class="wo-label">Mobile</div>
-                          <div class="wo-value mono accent">{wo.phone}</div>
-                        </div>
-                        {wo.email ? (
-                          <div class="wo-field" style={{ gridColumn: "1/-1" }}>
-                            <div class="wo-label">Email</div>
-                            <div class="wo-value" style={{ fontSize: "11px" }}>
-                              {wo.email}
-                            </div>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                        {wo.address ? (
-                          <div class="wo-field" style={{ gridColumn: "1/-1" }}>
-                            <div class="wo-label">Address</div>
-                            <div class="wo-value" style={{ fontSize: "11px" }}>
-                              {wo.address}
-                            </div>
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
-                    {/* VEHICLES */}
-                    <div class="wo-sec mt-4">
-                      <div class="wo-sec-title">🚗 Vehicle</div>
-                      <div class="wo-grid-2">
-                        <div class="wo-field">
-                          <div class="wo-label">Reg No.</div>
-                          <div class="wo-value mono accent">{wo.vehicle}</div>
-                        </div>
-                        <div class="wo-field">
-                          <div class="wo-label">Make/Model</div>
-                          <div class="wo-value">{wo.make}</div>
-                        </div>
-                        <div class="wo-field">
-                          <div class="wo-label">Type</div>
-                          <div class="wo-value">{wo.vehType}</div>
-                        </div>
-                        <div class="wo-field">
-                          <div class="wo-label">Odometer</div>
-                          <div class="wo-value">
-                            {wo.km
-                              ? wo.km.toLocaleString("en-IN") + " km"
-                              : "—"}
-                          </div>
-                        </div>
-                        <div class="wo-field">
-                          <div class="wo-label">Fuel</div>
-                          <div class="wo-value">{wo.fuel || "—"}</div>
-                        </div>
-                        <div class="wo-field">
-                          <div class="wo-label">Technician</div>
-                          <div class="wo-value">👷 {wo.tech}</div>
-                        </div>
-                      </div>
-                      <div className="mt-2">
-                        {wo.startTime ? (
-                          <span className="wo-card-hdr-text">
-                            ⏱ Start:{" "}
-                            <b style={{ color: "var(--text)" }}>
-                              {wo.startTime}
-                            </b>
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                        &nbsp;
-                        {wo.endTime ? (
-                          <span className="wo-card-hdr-text">
-                            End:{" "}
-                            <b style={{ color: "var(--green)" }}>
-                              {wo.endTime}
-                            </b>
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {/* SERVICES */}
-                  <div>
-                    <div className="wo-card-sec">
-                      <div className="wo-card-sec-title">🔍 Services</div>
-
-                      <div className="wo-card-tags mt-3">
-                        {(wo.services || []).map((s, i) => (
-                          <span key={i} className="wo-card-svc-tag">
-                            {svcLabels[s] || s}
-                          </span>
-                        ))}
-                      </div>
-
-                      {wo.complaint && (
-                        <div className="wo-card-complaint">
-                          💬 "{wo.complaint}"
-                        </div>
-                      )}
-                    </div>
-                    <div className="wo-card-sec wo-card-mt">
-                      <div className="wo-card-sec-title">🛞 Tyre Items</div>
-
-                      {(wo.tyreItems || []).length ? (
-                        wo.tyreItems.map((t, i) => (
-                          <div key={i} className="wo-card-tyre-row">
-                            <span className="wo-card-tyre-name">
-                              {t.brand} {t.size}
-                            </span>
-
-                            <span className="wo-card-tyre-meta">
-                              ×{t.qty} · {t.position}
-                            </span>
-
-                            <span
-                              className={`wo-card-tag ${
-                                t.condition === "New"
-                                  ? "wo-card-tag-ok"
-                                  : "wo-card-tag-grey"
+                    return (
+                      <tr key={wo._id}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <span className="wo-id-link"
+                            onClick={() => {
+                              setSelectedWO(wo);
+                              setOpenWoDetails(true);
+                            }}
+                          >
+                            {wo.woNumber}</span>
+                        </td>
+                        <td>{wo.vehicle?.brandModel}</td>
+                        <td>{wo.vehicle?.registrationNo}</td>
+                        <td>{wo.vehicle?.vehicleType}</td>
+                        <td>
+                          {allServices
+                            .flatMap((s) =>
+                              s.name?.includes(",") ? s.name.split(",") : [s.name],
+                            )
+                            .map((name, i, arr) => (
+                              <span key={i}>
+                                {name.trim()}
+                                {i < arr.length - 1 && ", "}
+                              </span>
+                            ))}
+                        </td>
+                        <td>
+                          {(wo.tyres || [])
+                            .map((t) => `${t.position} - ${t.brand}`)
+                            .join(", ")}
+                        </td>
+                        <td>{wo.advisor}</td>
+                        <td>
+                          <span
+                            className={`wo-tag ${wo.status === "COMPLETED"
+                              ? "t-ok"
+                              : wo.status === "CREATED"
+                                ? "t-pending"
+                                : "t-partial"
                               }`}
+                          >
+                            {wo.status.replace("_", " ")}
+                          </span>
+                        </td>
+                        <td>
+                          <label className={`ios-switch-small ${wo.status === "COMPLETED" ? "disabled" : ""}`}>
+                            <input
+                              type="checkbox"
+                              checked={wo.status === "COMPLETED" || wo.isActive}
+                              disabled={wo.status === "COMPLETED"}
+                              onChange={() => handleCompleteToggle(wo)}
+                            />
+                            <span className="slider" />
+                          </label>
+                        </td>
+                        <td>
+                          {new Date(wo.createdAt).toLocaleDateString("en-GB")}
+                        </td>
+                        <td>
+                          {assigningBayId === wo._id ? (
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                              <input
+                                className="wo-inp"
+                                style={{ width: "90px" }}
+                                placeholder="Bay no.."
+                                value={bayInput}
+                                onChange={(e) => setBayInput(e.target.value)}
+                              />
+                              <span
+                                style={{ cursor: "pointer", color: "green", fontSize: "18px" }}
+                                onClick={() => handleAssignBay(wo.woNumber)}
+                              >
+                                <IoMdCheckmarkCircleOutline />
+                              </span>
+                              <span
+                                style={{ cursor: "pointer", color: "red", fontSize: "18px" }}
+                                onClick={() => {
+                                  setAssigningBayId(null);
+                                  setBayInput("");
+                                }}
+                              >
+                                <MdOutlineCancel />
+                              </span>
+                            </div>
+
+                          ) : (wo.bayStatus === "OCCUPIED" || wo.status === "COMPLETED") ? (
+                            <div className="wo-bay-tag">
+                              Assigned: {wo.bay}
+                            </div>
+
+                          ) : (
+                            <button
+                              className="btn btn-p btn-sm"
+                              onClick={() => {
+                                setAssigningBayId(wo._id);
+                                setBayInput("");
+                              }}
                             >
-                              {t.condition}
-                            </span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="wo-card-empty">No tyre replacement</div>
-                      )}
-                      {(wo.addons || []).length > 0 && (
-                        <>
-                          <div className="wo-card-addon-title">Add-ons</div>
-
-                          {wo.addons.map((a, i) => (
-                            <div key={i} className="wo-card-addon-row">
-                              <span>
-                                {a.name} ×{a.qty}
-                              </span>
-                              <span>
-                                ₹{(a.qty * a.price).toLocaleString("en-IN")}
-                              </span>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                    </div>
-                    {wo.workDone && (
-                      <div className="wo-card-sec wo-card-mt">
-                        <div className="wo-card-sec-title">✅ Work Done</div>
-
-                        <div className="wo-card-workdone">{wo.workDone}</div>
-                      </div>
-                    )}
-                  </div>
-                  {/* INSPECTION */}
-                  <div>
-                    <div className="wo-sec">
-                      <div className="wo-card-sec-title">
-                        🔍 Inspection Checklist
-                      </div>
-                      <div className="insp-grid">
-                        {Object.entries(wo.inspection || {}).map(([k, v]) => (
-                          <div className="insp-item" key={k}>
-                            <span className="insp-icon">{inspIcon(k)}</span>
-                            <div className="insp-label">{inspLabel(k)}</div>
-                            <div className={`insp-status ${inspColor(v)}`}>
-                              {v}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Billing */}
-                    <div className="wo-sec wo-card-mt">
-                      <div className="wo-sec-title">💰 Billing Summary</div>
-
-                      {(wo.prodItems || []).map((i, idx) => (
-                        <div className="wo-bill-row" key={`prod-${idx}`}>
-                          <span className="wo-card-muted">
-                            {i.name} ×{i.qty}
-                          </span>
-                          <span>
-                            ₹{(i.qty * i.rate).toLocaleString("en-IN")}
-                          </span>
-                        </div>
-                      ))}
-
-                      {(wo.svcItems || []).map((i, idx) => (
-                        <div className="wo-bill-row" key={`svc-${idx}`}>
-                          <span className="wo-card-muted">{i.name}</span>
-                          <span>
-                            ₹{(i.qty * i.rate).toLocaleString("en-IN")}
-                          </span>
-                        </div>
-                      ))}
-
-                      {wo.discount && (
-                        <div className="wo-bill-row disc-row">
-                          <span>Discount</span>
-                          <span>−₹{wo.discount.toLocaleString("en-IN")}</span>
-                        </div>
-                      )}
-
-                      <div className="wo-bill-row gst-row">
-                        <span>GST (18%)</span>
-                        <span>₹{gstAmt.toLocaleString("en-IN")}</span>
-                      </div>
-
-                      <div className="wo-bill-row total-row">
-                        <span>TOTAL</span>
-                        <span className="wo-card-accent">
-                          ₹
-                          {(wo.total || wo.totalEst || 0).toLocaleString(
-                            "en-IN",
+                              Assign Bay
+                            </button>
                           )}
-                        </span>
-                      </div>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-g btn-sm"
+                            onClick={()=>{
+                              setSelectedWO(wo)
+                              setOpenDiscount(true)}
+                            }>
+                            <MdOutlineRemoveRedEye /> View Bill
+                          </button>
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          <MdEdit
+                            color="green"
+                            className="me-1"
+                            size={18}
+                            cursor="pointer"
+                            onClick={() => {
+                              setEditData(wo);
+                              setOpenAddWorkerOrderModal(true);
+                            }}
+                          />
+                          <MdDelete color="red" size={18} cursor={'pointer'}
+                            onClick={() => {
+                              setWoNumber(wo.woNumber);
+                              setDeleteModal(true);
+                            }} />
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="11" className="items-empty">
+                      No Work Orders Found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
-                      <div className="wo-card-pay-row">
-                        <span className="wo-card-muted">
-                          💳 {wo.payMode || "—"}
-                        </span>
-                        <span
-                          className={
-                            wo.payStatus === "paid"
-                              ? "pay-status-paid"
-                              : "pay-status-pend"
-                          }
-                        >
-                          {wo.payStatus === "paid" ? "✓ PAID" : "⏳ PENDING"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+          {openAddWorkerOrderModal && (
+            <AddWorkOrderModal
+              closeModal={() => {
+                setOpenAddWorkerOrderModal(false);
+                setEditData(null);
+              }}
+              editData={editData}
+              setWoData={setWoData}
+            />
+          )}
+          {deleteModal && (
+            <div className="delete-backdrop">
+              <div className="delete-modal">
+                <div className="delete-icon-wrap">
+                  <MdDelete className="delete-icon" />
                 </div>
 
-                <div>
-                  {/* Timeline */}
-                  <div className="status-timeline">
-                    {stl.map((step, idx) => {
-                      const isDone = idx < si;
-                      const isActive = idx === si;
+                <h3 className="delete-title">Delete Item?</h3>
 
-                      return (
-                        <React.Fragment key={step.key}>
-                          <div
-                            className={`stl-step ${isDone ? "done" : ""} ${
-                              isActive ? "active" : ""
-                            }`}
-                          >
-                            <div className="stl-icon">{step.icon}</div>
-                            <div>
-                              {step.label.split("\n").map((line, i) => (
-                                <div className="stl-label" key={i}>
-                                  {line}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          {idx < stl.length - 1 && (
-                            <div
-                              className={`stl-line ${isDone ? "done" : ""}`}
-                            />
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
+                <p className="delete-text">
+                  Are you sure you want to delete this item? This action cannot be
+                  undone.
+                </p>
 
-                  {/* Bottom Grid */}
-                  <div className="wo-card-bottom-grid">
-                    {/* AI Suggestions */}
-                    <div className="wo-sec">
-                      <div className="wo-sec-title">🤖 AI Suggestions</div>
+                <div className="delete-actions">
+                  <button
+                    className="delete-btn cancel"
+                    onClick={() => {
+                      setDeleteModal(false);
+                      setWoNumber(null);
+                    }}
+                  >
+                    Cancel
+                  </button>
 
-                      {(wo.aiSuggestions || []).length ? (
-                        wo.aiSuggestions.map((s, i) => (
-                          <div className="ai-sug" key={i}>
-                            <span className="ai-sug-icon">💡</span>
-                            <span className="ai-sug-text">{s}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="wo-card-bottom-muted">
-                          No suggestions
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Photos */}
-                    <div className="wo-sec">
-                      <div className="wo-sec-title">📸 Photos & Approval</div>
-
-                      <div className="photo-slots wo-card-bottom-mb">
-                        <div
-                          className={`photo-slot ${
-                            wo.photos?.includes("before_tyre") ||
-                            wo.photos?.includes("before_rear")
-                              ? "filled"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            toast("Photo upload (connect camera)", "info")
-                          }
-                        >
-                          <span className="photo-slot-icon">📷</span>
-                          <span className="photo-slot-label">Before</span>
-                        </div>
-
-                        <div
-                          className={`photo-slot ${
-                            wo.photos?.includes("after_tyre") ? "filled" : ""
-                          }`}
-                          onClick={() =>
-                            toast("Photo upload (connect camera)", "info")
-                          }
-                        >
-                          <span className="photo-slot-icon">📸</span>
-                          <span className="photo-slot-label">After</span>
-                        </div>
-
-                        <div
-                          className={`photo-slot ${
-                            wo.photos?.includes("alignment_report")
-                              ? "filled"
-                              : ""
-                          }`}
-                          onClick={() =>
-                            toast("Photo upload (connect camera)", "info")
-                          }
-                        >
-                          <span className="photo-slot-icon">📊</span>
-                          <span className="photo-slot-label">Report</span>
-                        </div>
-
-                        <div
-                          className="photo-slot"
-                          onClick={() => toast("Add more photos", "info")}
-                        >
-                          <span className="photo-slot-icon">➕</span>
-                          <span className="photo-slot-label">Add</span>
-                        </div>
-                      </div>
-
-                      <div className="wo-card-bottom-sign-wrap">
-                        <div
-                          className={`sig-pad ${
-                            wo.custApproval ? "signed" : ""
-                          } wo-card-bottom-sign`}
-                        >
-                          {wo.custApproval
-                            ? "✅ Customer Approved"
-                            : "✍ Tap to Sign / OTP"}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Followup */}
-                    <div className="wo-sec">
-                      <div className="wo-sec-title">⏰ Follow-up & Comms</div>
-
-                      {wo.nextService && (
-                        <div className="wo-card-bottom-row">
-                          📅 Next Service:
-                          <b className="wo-card-bottom-accent">
-                            {wo.nextService}
-                          </b>
-                        </div>
-                      )}
-
-                      {wo.warrantyExpiry && (
-                        <div className="wo-card-bottom-row">
-                          🛡 Warranty:
-                          <b className="wo-card-bottom-green">
-                            {wo.warrantyExpiry}
-                          </b>
-                        </div>
-                      )}
-
-                      {wo.staffNotes && (
-                        <div className="wo-card-bottom-note">
-                          📝 {wo.staffNotes}
-                        </div>
-                      )}
-
-                      <div className="wo-card-bottom-actions">
-                        <button className="btn btn-sm wo-card-bottom-btn">
-                          📱 WA Track
-                        </button>
-
-                        <button
-                          className="btn btn-sm wo-card-bottom-btn"
-                          onClick={() =>
-                            toast.info("Invoice sent via WhatsApp!", "ok")
-                          }
-                        >
-                          🧾 WA Invoice
-                        </button>
-
-                        <button
-                          className="btn btn-sm wo-card-bottom-btn"
-                          onClick={() => toast("Reminder set!", "ok")}
-                        >
-                          ⏰ Remind
-                        </button>
-                      </div>
-
-                      <div className="track-link wo-card-bottom-track">
-                        <span className="wo-card-bottom-muted">🔗</span>
-                        <span className="track-url">
-                          tranzoop.app/track/{wo.id}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <button
+                    className="delete-btn confirm"
+                    onClick={handleDelete}
+                    disabled={deleteLoading}
+                  >
+                    {deleteLoading ? (
+                      <span className="btn-loader"></span>
+                    ) : (
+                      <>
+                        <MdDelete /> Delete
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
-          );
-        })}
-      </div>
-    </div>
+          )}
+        </div>)}
+        {openDiscount && 
+        <DiscountModal
+  closeModal={setOpenDiscount}
+  woData={selectedWO}
+  setWoData={setWoData}
+  onBillCreated={(data) => {
+    setBillData(data?.bill);
+    setOpenBillModal(true);
+  }}
+/>}
+{openBillModal && (
+  <BillModal
+    closeModal={() => setOpenBillModal(false)}
+    billData={billData}
+  />
+)}
+    </>
   );
 }
