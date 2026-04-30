@@ -230,7 +230,7 @@ const Purchase = () => {
                           }}>
                           <MdOutlinePayments /> Pay
                         </button>
-                        : <span className="wo-tag t-ok">
+                        : <span className="wo-tag t-ok" style={{ verticalAlign: "middle" }}>
                           <LuCircleCheckBig size={12} className="me-1"/> {p.paymentStatus}
                         </span>}
                       </td>

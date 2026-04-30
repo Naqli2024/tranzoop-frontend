@@ -13,6 +13,7 @@ import { saveAs } from "file-saver";
 import PaymentSuccessModal from "./PaymentSuccessModal";
 import Loader from "../../../components/Loader";
 import { MdOutlinePayments } from "react-icons/md";
+import { LuCircleCheckBig } from "react-icons/lu";
 
 const Payments = () => {
   const [search, setSearch] = useState("");
@@ -231,15 +232,19 @@ const Payments = () => {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className="btn btn-sm btn-b"
-                      onClick={() => {
-                        setSelectedBill(item);
-                        setOpenPaymentModal(true);
-                      }}
-                    >
-                      <MdOutlinePayments /> Pay
-                    </button>
+                    {item.dueAmount !== 0
+                      ? <button
+                        className="btn btn-sm btn-b"
+                        onClick={() => {
+                          setSelectedBill(item);
+                          setOpenPaymentModal(true);
+                        }}
+                      >
+                        <MdOutlinePayments /> Pay
+                      </button>
+                      : <span className="wo-tag t-ok" style={{ verticalAlign: "middle" }}>
+                        <LuCircleCheckBig size={12} className="me-1" /> {item.paymentStatus}
+                      </span>}
                   </td>
                 </tr>
               ))

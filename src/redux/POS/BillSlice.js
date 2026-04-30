@@ -63,6 +63,18 @@ export const getBillByCustomerId = createAsyncThunk(
   },
 );
 
+export const getInvoiceByBillNo = createAsyncThunk(
+  "getInvoiceByBillNo",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await BillService.post(`/invoice/by-billno`,payload);
+      return response;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 const BillSlice = createSlice({
   name: "bills",
   initialState: {
@@ -85,7 +97,7 @@ const BillSlice = createSlice({
       state.bills = null;
       state.error = action.payload;
     };
-    [createBill,getBillByBusinessId,getBillByCustomerId,getBillById,addPayment].forEach((action) => {
+    [createBill,getBillByBusinessId,getBillByCustomerId,getBillById,addPayment,getInvoiceByBillNo].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)
         .addCase(action.fulfilled, handleFullFilled)

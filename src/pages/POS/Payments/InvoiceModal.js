@@ -4,20 +4,38 @@ import { getUserById } from "../../../redux/Auth/AuthSlice";
 import { toast } from "react-toastify";
 import Loader from "../../../components/Loader";
 import { BsPrinter } from "react-icons/bs";
+import Logo from "../../../assets/images/logo.jpg";
+import { QRCodeCanvas } from "qrcode.react";
+import { getInvoiceByBillNo } from "../../../redux/POS/BillSlice";
+import { LuDownload } from "react-icons/lu";
+import { useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
-export default function InvoiceModal({ closeModal, invoiceData, customerData }) {
+export default function InvoiceModal({ closeModal, invoiceNo }) {
   const [userData, setUserData] = useState();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const [invoiceData, setInvoiceData] = useState(null);
+  const invoiceRef = useRef();
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(getUserById())
-      .unwrap()
-      .then((res) => setUserData(res || {}))
-      .catch((err) => toast.error(err))
-      .finally(() => setLoading(false));
-  }, [dispatch]);
+    useEffect(() => {
+      if (!invoiceNo) return;
+      const fetchInvoice = async () => {
+        try {
+          setLoading(true);
+          const res = await dispatch(
+            getInvoiceByBillNo({ billNo: invoiceNo })
+          ).unwrap();
+          setInvoiceData(res.data.invoice);
+        } catch (err) {
+          toast.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchInvoice();
+    }, [dispatch, invoiceNo]);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -70,7 +88,7 @@ export default function InvoiceModal({ closeModal, invoiceData, customerData }) 
     return { cgstRate: half, sgstRate: half };
   };
 
-  const gstData = invoiceData?.items?.map((item) => {
+  const gstData = (invoiceData?.items || [])?.map((item) => {
     const taxable = item.price * item.quantity;
 
     const { cgstRate, sgstRate } = getGSTSplit(item.gst);
@@ -93,7 +111,7 @@ export default function InvoiceModal({ closeModal, invoiceData, customerData }) 
     return price + (price * gst) / 100;
   };
 
-  const gstTotals = gstData.reduce(
+  const gstTotals = (gstData || []).reduce(
     (acc, row) => {
       acc.taxable += row.taxable || 0;
       acc.cgst += row.cgstAmount || 0;
@@ -104,17 +122,17 @@ export default function InvoiceModal({ closeModal, invoiceData, customerData }) 
     { taxable: 0, cgst: 0, sgst: 0, totalTax: 0 }
   );
 
-  const totalQty = invoiceData?.items?.reduce(
+  const totalQty = (invoiceData?.items || [])?.reduce(
     (acc, i) => acc + i.quantity,
     0
   );
 
-  const subTotal = invoiceData?.items?.reduce(
+  const subTotal = (invoiceData?.items || [])?.reduce(
     (acc, i) => acc + i.price * i.quantity,
     0
   );
 
-  const totalGST = invoiceData?.items?.reduce(
+  const totalGST = (invoiceData?.items || [])?.reduce(
     (acc, i) => acc + (i.price * i.quantity * i.gst) / 100,
     0
   );
@@ -128,42 +146,90 @@ export default function InvoiceModal({ closeModal, invoiceData, customerData }) 
     window.print();
   };
 
+const handleDownload = async () => {
+  try {
+    const element = invoiceRef.current;
+
+    const canvas = await html2canvas(element, {
+      scale: 2, 
+      useCORS: true,
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const imgWidth = 210; 
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save(`Invoice-${invoiceData.billNo}.pdf`);
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to download invoice");
+  }
+};
+
+  if (!invoiceData) return <Loader isLoading={true} />;
+
   return (
     <div className="inv-overlay" onClick={closeModal}>
       {loading && <Loader isLoading={loading} />}
       <div className="inv-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="inv-modal-body">
+        <div className="inv-modal-body"  ref={invoiceRef}>
           <div className="inv-tax-inv-text">Tax Invoice</div>
           <div className="inv-top-date">
             <p>Invoice No: <span>{invoiceData.billNo}</span></p>
-            <p>Dated: <span>{formatDate(invoiceData?.createdAt)}</span></p>
+            <p>Dated: <span>{formatDate(invoiceData?.date)}</span></p>
+          </div>
+          <div className="d-flex justify-content-between">
+            <div className="inv-logo">
+              <img src={Logo} alt="Logo" />
+            </div>
+            <div className="inv-qr-code">
+              <QRCodeCanvas value={`https://tranzoop.com/invoice/${invoiceNo}`} size={70} />
+            </div>
           </div>
           <div className="inv-header">
             <div>
               <div className="inv-shop-name">
-                {userData?.business?.shopName || "Tyre Shop"}
+                {invoiceData?.business?.name || "Tyre Shop"}
               </div>
               <div className="inv-shop-detail">
-                {userData?.business?.address}
+                {invoiceData?.business?.address}
               </div>
-              <div className="inv-shop-detail">+91 {userData?.business?.mobile}
+              <div className="inv-shop-detail">+91 {invoiceData?.business?.mobile}
               </div>
               <div className="inv-shop-gstin">
-                GSTIN: {userData?.business?.gstNo || "N/A"}
+                GSTIN: {invoiceData?.business?.gstNo || "N/A"}
               </div>
             </div>
             <div>
               <div>Bill To:</div>
               <div className="inv-shop-name">
-                {invoiceData?.customerName}
+                {invoiceData?.customer?.name}
               </div>
               <div className="inv-shop-detail">
-                {customerData?.address}
+                {invoiceData?.customer?.address}
               </div>
-              <div className="inv-shop-detail">+91 {customerData?.mobile || "—"}
+              <div className="inv-shop-detail">+91 {invoiceData?.customer?.mobile || "—"}
               </div>
               <div className="inv-shop-gstin">
-                GSTIN: {userData?.business?.gstNo || "N/A"}
+                GSTIN: {invoiceData?.customer?.gstNo || "N/A"}
               </div>
             </div>
           </div>
@@ -330,8 +396,11 @@ export default function InvoiceModal({ closeModal, invoiceData, customerData }) 
         </div>
       </div>
       <div className="invoice-download-btn">
-        <div className="print-btn" onClick={handlePrint}>
+        <div className="print-btn mb-3" onClick={handlePrint}>
           <BsPrinter size={20} />
+        </div>
+        <div className="print-btn" onClick={handleDownload}>
+          <LuDownload size={20} />
         </div>
       </div>
     </div>

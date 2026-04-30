@@ -269,8 +269,7 @@ const Invoices = () => {
       {openInvoiceModal && (
         <InvoiceModal
           closeModal={() => setOpenInvoiceModal(false)}
-          invoiceData={selectedBill}
-          customerData={selectedCustomer}
+          invoiceNo={selectedBill?.billNo}
         />
       )}
     </div>

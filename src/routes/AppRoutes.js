@@ -20,6 +20,8 @@ import Payments from "../pages/POS/Payments/Payments";
 import Invoices from "../pages/POS/Invoices/Invoices";
 import Transport from "../pages/Transport/Transport";
 import Settings from "../pages/POS/Settings/Settings";
+import InvoiceModal from "../pages/POS/Payments/InvoiceModal";
+import ScannedInvoice from "../pages/POS/Invoices/ScannedInvoice";
 
 
 const AppRoutes = () => {
@@ -29,7 +31,7 @@ const AppRoutes = () => {
     "/",
   ];
 
-    const hideHeaderRoutes = ["/","/sign-in/:key","/sign-up/:key","/transport"];
+  const hideHeaderRoutes = ["/","/sign-in/:key","/sign-up/:key","/transport","/invoice/:invNo"];
 
   const hideHeader = hideHeaderRoutes.some((route) =>
     matchPath({ path: route, end: true }, location.pathname)
@@ -63,6 +65,12 @@ const AppRoutes = () => {
           path="sign-up/:key"
           element={
               <SignUp />
+          }
+        />
+        <Route
+          path="invoice/:invNo"
+          element={
+              <ScannedInvoice />
           }
         />
         <Route path="/pos" element={<POSMain />}>
