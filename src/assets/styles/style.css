@@ -5640,6 +5640,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
   }
 }
+/* Default (desktop) */
+.inv-modal-body {
+  transform: scale(1);
+  transform-origin: top center;
+}
+
+/* Mobile view - zoom out */
+@media (max-width: 768px) {
+  .inv-modal-body {
+    transform: scale(0.75);  
+    transform-origin: top center;
+    width: 133%;          
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .inv-modal-body {
+    transform: scale(0.7);
+    transform-origin: top center;
+    width: 167%;
+  }
+}
 /* ════════════════════════════PAYMENT SUCCESS-MODAL══════════════════════════════════ */
 .pay-success-overlay {
   position: fixed;
