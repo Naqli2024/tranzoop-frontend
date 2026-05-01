@@ -503,7 +503,7 @@ const POS = () => {
           </div>
         </div>
 
-        {openAddItemModal && <AddItemsModal closeModal={setOpenAddItemModal} />}
+        {openAddItemModal && <AddItemsModal closeModal={setOpenAddItemModal} setItemData={setItemData}/>}
         {openSelectCustomerModal && (
           <SelectCustomerModal
             closeModal={setOpenSelectCustomerModal}

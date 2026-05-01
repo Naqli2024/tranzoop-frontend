@@ -118,8 +118,10 @@ const handleSubmit = async (e) => {
           payload: data,
         })
       ).unwrap();
+      closeModal(false);
     } else {
       response = await dispatch(addItems(data)).unwrap();
+      closeModal(false);
     }
 
     const res = await dispatch(getAllItems()).unwrap();
@@ -133,8 +135,6 @@ const handleSubmit = async (e) => {
     setItemData(items);
 
     toast.success(response.message);
-
-    closeModal(false);
 
   } catch (error) {
     console.error(error);

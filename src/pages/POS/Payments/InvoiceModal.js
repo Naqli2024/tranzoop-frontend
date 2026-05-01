@@ -140,7 +140,9 @@ export default function InvoiceModal({ closeModal, invoiceNo }) {
   const cgstTotal = totalGST / 2;
   const sgstTotal = totalGST / 2;
 
-  const grandTotal = subTotal + totalGST;
+  const rawTotal = invoiceData?.summary?.grandTotal || 0;
+  const roundedTotal = Math.round(rawTotal);
+  const roundOff = Number((roundedTotal - rawTotal).toFixed(2));
 
   const handlePrint = () => {
     window.print();
@@ -312,7 +314,7 @@ const handleDownload = async () => {
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td className="fw-bold">₹{formatCurrency(invoiceData?.roundOff || 0)}</td>
+                  <td className="fw-bold"> ₹{formatCurrency(roundOff)}</td>
                 </tr>
                 <tr style={{ borderTop: "1px solid #000" }}>
                   <td></td>
@@ -320,7 +322,7 @@ const handleDownload = async () => {
                   <td></td>
                   <td style={{ textAlign: "center" }}><b>{invoiceData?.items?.reduce((acc, i) => acc + i.quantity, 0)} {invoiceData?.items[0]?.uom}</b></td>
                   <td colSpan={3}></td>
-                  <td className="fw-bold">₹{formatCurrency(invoiceData?.grandTotal)}</td>
+                  <td className="fw-bold">₹{formatCurrency(invoiceData?.summary?.grandTotal)}</td>
                 </tr>
               </tfoot>
             </table>
@@ -329,7 +331,8 @@ const handleDownload = async () => {
             <div className="amt-charge">Amount Chargeable (in words)</div>
             <div className="amt-charge-end">E. & O.E</div>
           </div>
-          <div className="amt-rupee">Indian Rupees {numberToWords(grandTotal)}</div>
+          <div className="amt-rupee">Indian Rupees {numberToWords(roundedTotal)}</div>
+          <div className="amt-charge fw-bold">Due Amount: ₹{formatCurrency(invoiceData?.summary?.dueAmount || 0)}</div>
           <div className="gst-summary-container">
             <table className="gst-table">
               <thead>
