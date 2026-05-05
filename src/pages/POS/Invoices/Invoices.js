@@ -27,6 +27,7 @@ const Invoices = () => {
   const [dateFilter, setDateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState();
 
   useEffect(() => {
     setLoading(true);
@@ -243,6 +244,7 @@ const Invoices = () => {
                       onClick={() => {
                         setSelectedBill(item);
                         setOpenBillModal(true);
+                        setMobileNumber(customerMap[item.customerId]?.mobile)
                       }}
                     >
                       View
@@ -264,6 +266,7 @@ const Invoices = () => {
         <BillModal
           closeModal={() => setOpenBillModal(false)}
           billData={selectedBill}
+          mobileNo={mobileNumber}
         />
       )}
       {openInvoiceModal && (

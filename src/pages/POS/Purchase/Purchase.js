@@ -108,7 +108,7 @@ const Purchase = () => {
           <div className="wo-ph">
             <span className="wo-ph-title">🏷️ Purchase</span>
             <div className="wo-ph-actions">
-              <button class="btn btn-b btn-sm">Export</button>
+              {/* <button class="btn btn-b btn-sm">Export</button> */}
               <button class="btn btn-p btn-sm" onClick={() => {
                 setSelectedPurchase(null)
                 setOpenNewPurchase(true)

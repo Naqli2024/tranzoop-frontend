@@ -4265,9 +4265,9 @@ select.sel {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  cursor: pointer;
   transition: border-color 0.15s;
   height: fit-content;
+  cursor: pointer;
 }
 .customer-card:hover {
   border-color: #5e7099;
@@ -4276,6 +4276,25 @@ select.sel {
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+.customer-info {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.customer-info-icon {
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.customer-info-icon:hover {
+  background-color: var(--accent-glow);
+  border: 1px solid var(--accent);
 }
 .customer-name {
   font-size: 13px;

@@ -122,6 +122,7 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
       {
         id: Date.now(),
         name: "",
+        category: "",
         size: "",
         hsn: "",
         sku: "",
@@ -180,6 +181,20 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
     }
   }, [viewData]);
 
+  const generateInvoiceNo = () => {
+  const prefix = "INV";
+  const timestamp = Date.now(); 
+  const random = Math.floor(100 + Math.random() * 900); 
+
+  return `${prefix}-${timestamp}-${random}`;
+};
+
+useEffect(() => {
+  if (!isViewMode) {
+    setInvoiceNo(generateInvoiceNo());
+  }
+}, []);
+
   return (
     <div className="purchase-container">
       {loading && <Loader isLoading={loading} />}
@@ -188,10 +203,10 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
           <IoArrowBackOutline cursor={"pointer"} onClick={backToList} />
           {isViewMode ? "Purchase Details" : "New Purchase"}
         </span>
-        {!isViewMode &&
+        {/* {!isViewMode &&
           <div className="wo-ph-actions">
             <button class="btn btn-b btn-sm">Import</button>
-          </div>}
+          </div>} */}
       </div>
       <div className="purchase-wrap">
         <div className="purchase-top">
@@ -256,7 +271,7 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
           </div>
           <div className="purchase-card purchase-grid-2 small">
             <div>
-              <label className="purchase-label">Supplier Invoice Number</label>
+              <label className="purchase-label"> Supplier Invoice No <small>(Auto-generated, editable)</small></label>
               <input
                 className="purchase-input"
                 disabled={isViewMode}
@@ -353,6 +368,17 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
                           type="number"
                           className="purchase-input"
                           disabled={isViewMode}
+                          value={i.size}
+                          onChange={(e) =>
+                            updateItem(i.id, "size", +e.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          className="purchase-input"
+                          disabled={isViewMode}
                           value={i.qty}
                           onChange={(e) =>
                             updateItem(i.id, "qty", +e.target.value)
@@ -411,14 +437,18 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
               <span>Total GST</span>
               <span>₹{gstTotal.toLocaleString("en-IN")}</span>
             </div>
-
             <div className="purchase-total">
               <span>Grand Total</span>
               <span>₹{grandTotal.toLocaleString("en-IN")}</span>
             </div>
           </div>
+          <div className="d-flex justify-content-center">
+            <button className="purchase-btn" onClick={handleSave}>
+              💾 Save & Update Stock
+            </button>
+          </div>
         </div>
-        <div className="purchase-bottom">
+        {/* <div className="purchase-bottom">
           <div className="purchase-card">
             <label className="purchase-label">Purchase Notes</label>
             <textarea
@@ -463,7 +493,7 @@ const NewPurchase = ({ backToList, setPurchaseData, viewData, isViewMode }) => {
               💾 Save & Update Stock
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

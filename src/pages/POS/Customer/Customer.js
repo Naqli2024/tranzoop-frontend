@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import AddCustomerModal from "./AddCustomerModal";
 import { useDispatch } from "react-redux";
-import { getAllCustomers } from "../../../redux/POS/CustomerSlice";
+import { deleteCustomer, getAllCustomers } from "../../../redux/POS/CustomerSlice";
 import { toast } from "react-toastify";
 import Loader from "../../../components/Loader";
 import CustomerDetails from "./CustomerDetails";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 const Customer = () => {
   const [openAddCustomerModal, setOpenAddCustomerModal] = useState(false);
@@ -16,6 +18,10 @@ const Customer = () => {
   const [search, setSearch] = useState("");
   const [openCustomerDetails, setOpenCustomerDetails] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState();
+  const [editData, setEditData] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteCustomerId, setDeleteCustomerId] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -44,10 +50,29 @@ const Customer = () => {
     );
   });
 
+  const handleDelete = async () => {
+    try {
+      setDeleteLoading(true);
+
+      const res = await dispatch(deleteCustomer(deleteCustomerId)).unwrap();
+
+      toast.success(res.message);
+      const response = await dispatch(getAllCustomers()).unwrap();
+      setCustomerData(response.data || []);
+
+      setDeleteModal(false);
+      setDeleteCustomerId(null);
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <>
       {openCustomerDetails
-        ? (<CustomerDetails backToList={() => setOpenCustomerDetails(false)} customerId={selectedCustomerId} setSelectedCustomerId={setSelectedCustomerId}/>)
+        ? (<CustomerDetails backToList={() => setOpenCustomerDetails(false)} customerId={selectedCustomerId} setSelectedCustomerId={setSelectedCustomerId} />)
         : (<div className="customer-container">
           {loading && <Loader isLoading={loading} />}
           <div className="wo-ph">
@@ -62,7 +87,10 @@ const Customer = () => {
               />
               <button
                 class="btn btn-p btn-sm"
-                onClick={() => setOpenAddCustomerModal(true)}
+                onClick={() => {
+                  setEditData(null)
+                  setOpenAddCustomerModal(true)
+                }}
               >
                 <IoAdd size={15} /> Add Customer
               </button>
@@ -87,37 +115,103 @@ const Customer = () => {
                     </div>
 
                     <div className="customer-info">
-                      <div className="customer-name">{c.fullName}</div>
-                      <div className="customer-sub">{c.mobile}</div>
-                      <div className="customer-sub">GST No: {c.gstNo || "-"}</div>
+                      <div className="d-flex justify-content-between">
+                        <div>
+                          <div className="customer-name">{c.fullName}</div>
+                          <div className="customer-sub">{c.mobile}</div>
+                          <div className="customer-sub">GST No: {c.gstNo || "-"}</div>
+                        </div>
+                        <div>
+                          <div className="customer-info-icon">
+                            <MdEdit
+                              color="green"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                setEditData(c);
+                                setOpenAddCustomerModal(true);
+                              }}
+                            />
+                          </div>
+                          <div className="customer-info-icon">
+                            <MdDelete
+                              color="red"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                setDeleteCustomerId(c._id);
+                                setDeleteModal(true);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                       <div className="customer-actions mt-2">
-                         <div className="customer-tags">
-                        <span className="customer-tag">{c.type}</span>
+                        <div className="customer-tags">
+                          <span className="customer-tag">{c.type}</span>
+                        </div>
+                        <div className="customer-view-btn"
+                          onClick={() => {
+                            setSelectedCustomerId(c._id)
+                            setOpenCustomerDetails(true)
+                          }}>
+                          <MdOutlineRemoveRedEye size={16} />View
+                        </div>
                       </div>
-                         <div className="customer-view-btn"
-                      onClick={()=>{
-                    setSelectedCustomerId(c._id)
-                    setOpenCustomerDetails(true)
-                  }}>
-                        <MdOutlineRemoveRedEye size={16}/>View
-                      </div>
-                      </div>
-                     
+
                     </div>
                   </div>
                 );
               })
             ) : (
-              <div style={{color:"var(--muted)"}}>No Customers found</div>
+              <div style={{ color: "var(--muted)" }}>No Customers found</div>
             )}
           </div>
           {openAddCustomerModal && (
             <AddCustomerModal
               closeModal={setOpenAddCustomerModal}
               setCustomerData={setCustomerData}
+              editData={editData}
+              setEditData={setEditData}
             />
           )}
         </div>)}
+      {deleteModal && (
+        <div className="delete-backdrop">
+          <div className="delete-modal">
+            <div className="delete-icon-wrap">
+              <MdDelete className="delete-icon" />
+            </div>
+            <h3 className="delete-title">Delete Item?</h3>
+            <p className="delete-text">
+              Are you sure you want to delete this customer? This action cannot be
+              undone.
+            </p>
+            <div className="delete-actions">
+              <button
+                className="delete-btn cancel"
+                onClick={() => {
+                  setDeleteModal(false);
+                  setDeleteCustomerId(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="delete-btn confirm"
+                onClick={handleDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <span className="btn-loader"></span>
+                ) : (
+                  <>
+                    <MdDelete /> Delete
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

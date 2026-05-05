@@ -387,7 +387,7 @@ const handleDownload = async () => {
                 </p>
               </div>
               <div className="signature">
-                <p className="fw-bold">for {userData?.business?.shopName || "Tyre Shop"}</p>
+                <p className="fw-bold">for {invoiceData?.business?.name || "Tyre Shop"}</p>
                 <div className="sign-space"></div>
                 <p>Authorised Signatory</p>
               </div>

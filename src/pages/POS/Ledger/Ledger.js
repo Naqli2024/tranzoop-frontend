@@ -193,19 +193,25 @@ const handleViewSupplierLedger = async (supplier) => {
   }
 };
 
-
-const filteredCustomers = Array.isArray(customerData)
-  ? customerData.filter((c) =>
-      c.customerName
+  const filteredCustomers = Array.isArray(customerData)
+  ? customerData.filter((c) => {
+      const matchesSearch = c.customerName
         ?.toLowerCase()
-        .includes(searchCustomer.toLowerCase())
-    )
+        .includes(searchCustomer.toLowerCase());
+
+      const hasBalance = Number(c.balance || 0) > 0;
+
+      return matchesSearch && hasBalance;
+    })
   : [];
 
 const filteredSuppliers = Array.isArray(supplierData)
-  ? supplierData.filter((s) =>
-      s.supplierName?.toLowerCase().includes(searchCustomer.toLowerCase())
-    )
+  ? supplierData.filter((s) => {
+      const matchesSearch = s.supplierName?.toLowerCase().includes(searchCustomer.toLowerCase());
+      const hasBalance = Number(s.balance || 0) > 0;
+
+      return matchesSearch && hasBalance;
+    })
   : [];
 
 const totalRevenue = revenueData
@@ -346,7 +352,7 @@ const totalSales = Array.isArray(tSalesData)
         <div>
           {!customerDetails && (
             <>
-<input
+          <input
           class="items-inp m-3"
           style={{ flex: "1", maxWidth: "350px" }}
           placeholder="Search customer…"

@@ -14,6 +14,30 @@ export const addCustomer = createAsyncThunk(
   }
 );
 
+export const editCustomer = createAsyncThunk(
+  "editCustomer",
+  async ({customerId,payload}, { rejectWithValue }) => {
+    try {
+      const { data } = await CustomerService.put(`/${customerId}`, payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
+export const deleteCustomer = createAsyncThunk(
+  "deleteCustomer",
+  async (customerId, { rejectWithValue }) => {
+    try {
+      const { data } = await CustomerService.delete(`/${customerId}`);
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
 export const getAllCustomers = createAsyncThunk(
   "getAllCustomers",
   async (_, { rejectWithValue }) => {
@@ -60,7 +84,7 @@ const CustomerSlice = createSlice({
       state.customers = null;
       state.error = action.payload;
     };
-    [addCustomer,getAllCustomers,getCustomerById].forEach((action) => {
+    [addCustomer,getAllCustomers,getCustomerById,editCustomer,deleteCustomer].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)
         .addCase(action.fulfilled, handleFullFilled)

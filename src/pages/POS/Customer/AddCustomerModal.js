@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addCustomer, getAllCustomers } from "../../../redux/POS/CustomerSlice";
+import { addCustomer, editCustomer, getAllCustomers } from "../../../redux/POS/CustomerSlice";
 import { toast } from "react-toastify";
 
-const AddCustomerModal = ({ closeModal,setCustomerData }) => {
+const AddCustomerModal = ({ closeModal,setCustomerData,editData,setEditData }) => {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -25,19 +25,39 @@ const AddCustomerModal = ({ closeModal,setCustomerData }) => {
     }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      const res = await dispatch(addCustomer(formData)).unwrap();
-      dispatch(getAllCustomers()).unwrap().then((response) => setCustomerData(response.data || []))
-      toast.success(res.message);
-      closeModal(false);
-    } catch (error) {
-      toast.error(error);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+  if (editData) {
+    setFormData(editData);
+  }
+}, [editData]);
+
+const handleSubmit = async () => {
+  try {
+    setLoading(true);
+
+    let res;
+
+    if (editData) {
+      res = await dispatch(
+        editCustomer({
+          customerId: editData._id,
+          payload: formData,
+        })
+      ).unwrap();
+    } else {
+      res = await dispatch(addCustomer(formData)).unwrap();
     }
-  };
+    const response = await dispatch(getAllCustomers()).unwrap();
+    setCustomerData(response.data || []);
+    toast.success(res.message);
+    closeModal(false);
+    setEditData(null);
+  } catch (error) {
+    toast.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="po-m-overlay">

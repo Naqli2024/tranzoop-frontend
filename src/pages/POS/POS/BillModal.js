@@ -6,7 +6,7 @@ import { getUserById } from "../../../redux/Auth/AuthSlice";
 import { useDispatch } from "react-redux";
 import Loader from "../../../components/Loader";
 
-const BillModal = ({ closeModal, billData }) => {
+const BillModal = ({ closeModal, billData, mobileNo }) => {
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -19,6 +19,43 @@ const BillModal = ({ closeModal, billData }) => {
       .catch((err) => toast.error(err))
       .finally(() => setLoading(false));
   }, [dispatch]);
+
+  const handleWhatsAppShare = () => {
+  const itemsText =
+    billData?.items
+      ?.map(
+        (item) =>
+          `${item.itemName} - ${item.quantity} x ₹${item.price} = ₹${item.total}`
+      )
+      .join("\n") || "";
+
+  const message = `
+*${userData?.business?.shopName || "Tyre Shop"}*
+${userData?.business?.address || ""}
+GST: ${userData?.business?.gstNo || "N/A"}
+
+Bill No: ${billData?.billNo}
+
+------------------------
+${itemsText}
+------------------------
+Subtotal: ₹${billData?.subTotal}
+Discount: ₹${billData?.discount || 0}
+GST: ₹${billData?.gstTotal}
+Due: ₹${billData?.dueAmount}
+TOTAL: ₹${billData?.grandTotal}
+
+Thank you ${billData?.customerName || "Customer"}!
+`;
+  if (!mobileNo) {
+    toast.error("Customer phone number missing");
+    return;
+  }
+
+  const url = `https://wa.me/${mobileNo}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
+};
 
   return (
     <div className="bill-overlay">
@@ -82,7 +119,7 @@ const BillModal = ({ closeModal, billData }) => {
 
         <div className="bill-footer">
           <p>Thank you, {billData?.customerName || "Customer"}!</p>
-          <small>Powered by Tranzoop Smart Business OS</small>
+          <small>Powered by Tranzoop</small>
         </div>
 
         {/* Actions */}
@@ -91,7 +128,7 @@ const BillModal = ({ closeModal, billData }) => {
             <FaPrint /> Print
           </button>
 
-          <button className="bill-btn whatsapp">
+          <button className="bill-btn whatsapp" onClick={handleWhatsAppShare}>
             <FaWhatsapp /> WhatsApp
           </button>
 
