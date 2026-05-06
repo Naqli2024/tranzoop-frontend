@@ -25,6 +25,7 @@ import { createBill, getBillById } from "../../../redux/POS/BillSlice";
 import { GiCarWheel } from "react-icons/gi";
 import SelectPaymentModal from "../Payments/SelectPaymentModal";
 import PaymentSuccessModal from "../Payments/PaymentSuccessModal";
+import { MdOutlineImage } from "react-icons/md";
 
 const payModes = [
   { l: "Cash", i: "💵" },
@@ -59,6 +60,7 @@ const POS = () => {
   const [openPaymentSuccessModal, setOpenPaymentSuccessModal] = useState(false);
   const [paymentResponse, setPaymentResponse] = useState();
   const [showCart, setShowCart] = useState(false);
+  const [imageMap, setImageMap] = useState({});
 
   useEffect(() => {
     setLoading(true);
@@ -250,6 +252,29 @@ const POS = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchImages = async () => {
+      const map = {};
+
+      await Promise.all(
+        itemData.map(async (item) => {
+          if (!item?.itemImage) return;
+
+          try {
+            const res = await dispatch(getItemImage(item.itemImage)).unwrap();
+            map[item.itemImage] = res?.data?.url;
+          } catch (err) {
+            console.error("Image fetch failed:", item.itemImage, err);
+          }
+        })
+      );
+
+      setImageMap(map);
+    };
+
+    if (itemData.length) fetchImages();
+  }, [itemData, dispatch]);
+
   return (
     <div class="pos-m-container">
       {loading && <Loader isLoading={loading} />}
@@ -317,10 +342,18 @@ const POS = () => {
                   onClick={() => handleAddToCart(item)}
                 >
                   <div className="pos-m-prod-card-image">
-                    <img
-                      src={`https://tranzoop.com${item.itemImage}`}
-                      alt={item?.itemName}
-                    />
+                    {imageMap[item.itemImage] ? (
+                      <img
+                        src={imageMap[item.itemImage]}
+                        alt={item?.itemName}
+                      />
+                    ) : null}
+                    <div
+                      className="pos-m-img-fallback"
+                      style={{ display: imageMap[item.itemImage] ? "none" : "flex" }}
+                    >
+                      <MdOutlineImage size={50} />
+                    </div>
                   </div>
                   <div className="pos-m-prod-card-name">
                     {item?.itemName?.length > 20
@@ -503,7 +536,7 @@ const POS = () => {
           </div>
         </div>
 
-        {openAddItemModal && <AddItemsModal closeModal={setOpenAddItemModal} setItemData={setItemData}/>}
+        {openAddItemModal && <AddItemsModal closeModal={setOpenAddItemModal} setItemData={setItemData} />}
         {openSelectCustomerModal && (
           <SelectCustomerModal
             closeModal={setOpenSelectCustomerModal}

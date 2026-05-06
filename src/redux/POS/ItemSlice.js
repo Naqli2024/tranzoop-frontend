@@ -34,6 +34,18 @@ export const getAllItems = createAsyncThunk(
   },
 );
 
+export const getItemImage = createAsyncThunk(
+  "getItemImage",
+  async (itemImageUrl, { rejectWithValue }) => {
+    try {
+      const response = await ItemService.get(`/image?filePath=${itemImageUrl}`);
+      return response;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 export const getSearchItems = createAsyncThunk(
   "getSearchItems",
   async (query, { rejectWithValue }) => {
@@ -105,7 +117,7 @@ const ItemSlice = createSlice({
       state.items = null;
       state.error = action.payload;
     };
-    [addItems,getAllItems,getSearchItems].forEach((action) => {
+    [addItems,getAllItems,getSearchItems,getItemImage,deleteItems,editItems,addFavorite].forEach((action) => {
       builder
         .addCase(action.pending, handlePending)
         .addCase(action.fulfilled, handleFullFilled)
