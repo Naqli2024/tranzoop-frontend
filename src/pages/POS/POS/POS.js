@@ -198,14 +198,14 @@ const POS = () => {
 
       const itemTotal = qty * price;
 
-      const itemDiscount =
-        subtotal > 0 ? (itemTotal / subtotal) * discountAmount : 0;
+      // const itemDiscount =
+      //   subtotal > 0 ? (itemTotal / subtotal) * discountAmount : 0;
 
-      const taxable = itemTotal - itemDiscount;
+      // const taxable = itemTotal - itemDiscount;
 
       const gstRate = item.gst || 0;
 
-      const gst = (taxable * gstRate) / 100;
+      const gst = (itemTotal * gstRate) / 100;
 
       acc.totalGST += gst || 0;
       acc.cgst += gst / 2 || 0;
@@ -215,11 +215,14 @@ const POS = () => {
     },
     { totalGST: 0, cgst: 0, sgst: 0 },
   );
+
   const gstAmount = gstBreakup.totalGST || 0;
   const cgst = gstBreakup.cgst || 0;
   const sgst = gstBreakup.sgst || 0;
 
-  const total = (taxableAmount || 0) + gstAmount;
+  // const total = (taxableAmount || 0) + gstAmount;
+  
+  const total = subtotal + gstAmount - discountAmount;
 
   const handleBillSubmit = async () => {
     try {
@@ -228,7 +231,7 @@ const POS = () => {
         return;
       }
       if (!selectedCustomer) {
-        toast.error("Select customer");
+        toast.info("Select customer");
         return;
       }
       setLoading(true);

@@ -1157,6 +1157,7 @@ body {
   user-select: none;
   height: fit-content;
   max-height: 250px;
+  overflow: hidden;
 }
 .pos-m-prod-card:hover {
   border-color: var(--accent-glow2);
@@ -1196,6 +1197,7 @@ body {
   font-size: 9px;
   color: var(--muted);
   font-family: var(--mono);
+  text-wrap: wrap;
 }
 .pos-m-prod-card-price {
   font-size: 12px;
@@ -3810,6 +3812,14 @@ select.sel {
   border-radius: 10px;
   border: 1px solid var(--border);
 }
+.dash-stock-panel {
+  background: var(--panel);
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  height: 220px;
+  overflow-y: scroll;
+}
 .dash-panel-title {
   font-size: 12px;
   font-weight: 700;
@@ -4497,9 +4507,13 @@ select.sel {
   padding-bottom: 5px;
 }
 .customer-details-bill-table td {
-  font-size: 13px;
+  font-size: 12px;
   padding: 6px 0;
   border-bottom: 1px solid var(--wo-border2);
+}
+.customer-details-bill-table .item-name {
+  font-size: 10px;
+  width: 160px;
 }
 .customer-details-bill-summary {
   text-align: right;
@@ -4540,10 +4554,21 @@ select.sel {
   color: #999;
 }
 .customer-details-bill-footer {
-  display: flex;
-  justify-content: flex-end;
   padding-top: 10px;
   border-top: 1px solid var(--border2);
+}
+.customer-details-bill-footer-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.customer-details-bill-footer-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
 }
 .paid-label {
   background: var(--accent-dim);
@@ -5650,7 +5675,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .inv-table,
   .inv-table th,
   .inv-table td {
-    border: 1px solid #000 !important;
     border-collapse: collapse;
   }
   .gst-table,
@@ -5666,13 +5690,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .invoice-download-btn {
     display: none;
   }
+  .inv-modal-body {
+    width: 100% !important;
+    transform: scale(1) !important;
+  }
 }
 /* Default (desktop) */
 .inv-modal-body {
   transform: scale(1);
   transform-origin: top center;
 }
-
 /* Mobile view - zoom out */
 @media (max-width: 768px) {
   .inv-modal-body {
@@ -5681,7 +5708,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 133%;          
   }
 }
-
 /* Extra small devices */
 @media (max-width: 480px) {
   .inv-modal-body {

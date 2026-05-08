@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import AddCustomerModal from "./AddCustomerModal";
 import { useDispatch } from "react-redux";
-import { deleteCustomer, getAllCustomers } from "../../../redux/POS/CustomerSlice";
+import { deleteCustomer, disableCustomer, getAllCustomers } from "../../../redux/POS/CustomerSlice";
 import { toast } from "react-toastify";
 import Loader from "../../../components/Loader";
 import CustomerDetails from "./CustomerDetails";
@@ -28,7 +28,10 @@ const Customer = () => {
     dispatch(getAllCustomers())
       .unwrap()
       .then((response) => {
-        setCustomerData(response.data || []);
+        const activeCustomers = (response.data || []).filter(
+      (customer) => customer.isActive === true
+    );
+        setCustomerData(activeCustomers);
       })
       .catch((error) => {
         toast.error(error);
@@ -40,26 +43,24 @@ const Customer = () => {
 
   const COLORS = ["#FF6B35", "#00C4FF", "#22C55E", "#F59E0B"];
 
-  const filteredCustomers = customerData.filter((c) => {
-    const query = search.toLowerCase();
-
-    return (
-      c.fullName?.toLowerCase().includes(query) ||
-      c.mobile?.toLowerCase().includes(query) ||
-      c.type?.toLowerCase().includes(query)
-    );
-  });
+const filteredCustomers = customerData.filter(
+  (c) =>
+    c.isActive &&
+    (
+      c.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+      c.mobile?.toLowerCase().includes(search.toLowerCase()) ||
+      c.companyName?.toLowerCase().includes(search.toLowerCase()) ||
+      c.type?.toLowerCase().includes(search.toLowerCase())
+    )
+);
 
   const handleDelete = async () => {
     try {
       setDeleteLoading(true);
-
-      const res = await dispatch(deleteCustomer(deleteCustomerId)).unwrap();
-
+      const res = await dispatch(disableCustomer(deleteCustomerId)).unwrap();
       toast.success(res.message);
       const response = await dispatch(getAllCustomers()).unwrap();
       setCustomerData(response.data || []);
-
       setDeleteModal(false);
       setDeleteCustomerId(null);
     } catch (err) {
@@ -180,7 +181,7 @@ const Customer = () => {
             <div className="delete-icon-wrap">
               <MdDelete className="delete-icon" />
             </div>
-            <h3 className="delete-title">Delete Item?</h3>
+            <h3 className="delete-title">Delete Customer?</h3>
             <p className="delete-text">
               Are you sure you want to delete this customer? This action cannot be
               undone.

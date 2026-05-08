@@ -207,7 +207,7 @@ const handleDownload = async () => {
             </div>
           </div>
           <div className="inv-header">
-            <div>
+            <div className="col-md-4">
               <div className="inv-shop-name">
                 {invoiceData?.business?.name || "Tyre Shop"}
               </div>
@@ -220,10 +220,10 @@ const handleDownload = async () => {
                 GSTIN: {invoiceData?.business?.gstNo || "N/A"}
               </div>
             </div>
-            <div>
+            <div className="col-md-4">
               <div>Bill To:</div>
               <div className="inv-shop-name">
-                {invoiceData?.customer?.name}
+                {invoiceData?.customer?.company}
               </div>
               <div className="inv-shop-detail">
                 {invoiceData?.customer?.address}

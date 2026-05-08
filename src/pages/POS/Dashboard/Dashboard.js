@@ -331,7 +331,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div class="dash-panel">
+          <div class="dash-stock-panel">
             <div class="dash-panel-title">STOCK ALERTS</div>
             {lowStockItems.length > 0 ? (
               lowStockItems.map((item) => (

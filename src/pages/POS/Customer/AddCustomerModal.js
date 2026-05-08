@@ -44,13 +44,17 @@ const handleSubmit = async () => {
           payload: formData,
         })
       ).unwrap();
+      closeModal(false);
     } else {
       res = await dispatch(addCustomer(formData)).unwrap();
+      closeModal(false);
     }
     const response = await dispatch(getAllCustomers()).unwrap();
-    setCustomerData(response.data || []);
+    const activeCustomers = (response.data || []).filter(
+      (customer) => customer.isActive === true
+    );
+    setCustomerData(activeCustomers);
     toast.success(res.message);
-    closeModal(false);
     setEditData(null);
   } catch (error) {
     toast.error(error);

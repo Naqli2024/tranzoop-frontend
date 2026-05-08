@@ -19,7 +19,10 @@ const SelectCustomerModal = ({
     dispatch(getAllCustomers())
       .unwrap()
       .then((response) => {
-        setCustomerData(response.data || []);
+        const activeCustomers = (response.data || []).filter(
+      (customer) => customer.isActive === true
+    );
+        setCustomerData(activeCustomers);
       })
       .catch((error) => {
         toast.error(error);

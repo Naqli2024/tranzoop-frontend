@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getBillByCustomerId } from "../../../redux/POS/BillSlice";
+import { deleteBill, getBillByCustomerId } from "../../../redux/POS/BillSlice";
 import Loader from "../../../components/Loader";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -9,8 +9,10 @@ import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { MdOutlinePayments } from "react-icons/md";
 import SelectPaymentModal from "../Payments/SelectPaymentModal";
 import PaymentSuccessModal from "../Payments/PaymentSuccessModal";
+import { MdDeleteOutline } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
-const CustomerDetails = ({ backToList, customerId,setSelectedCustomerId }) => {
+const CustomerDetails = ({ backToList, customerId, setSelectedCustomerId }) => {
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState({ paid: 0, partial: 0, notPaid: 0 });
@@ -25,6 +27,9 @@ const CustomerDetails = ({ backToList, customerId,setSelectedCustomerId }) => {
   const dispatch = useDispatch();
   const [paymentResponse, setPaymentResponse] = useState();
   const [openPaymentSuccessModal, setOpenPaymentSuccessModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteBillId, setDeleteBillId] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (!customerId) return;
@@ -50,39 +55,77 @@ const CustomerDetails = ({ backToList, customerId,setSelectedCustomerId }) => {
 
   const filteredBills = Array.isArray(bills)
     ? bills.filter((bill) => {
-        const statusMatch =
-          filters.status === "ALL" || bill.paymentStatus === filters.status;
+      const statusMatch =
+        filters.status === "ALL" || bill.paymentStatus === filters.status;
 
-        const billDate = new Date(bill.createdAt);
-        const today = new Date();
+      const billDate = new Date(bill.createdAt);
+      const today = new Date();
 
-        let rangeMatch = true;
+      let rangeMatch = true;
 
-        if (filters.range === "TODAY") {
-          rangeMatch = billDate.toDateString() === today.toDateString();
-        }
+      if (filters.range === "TODAY") {
+        rangeMatch = billDate.toDateString() === today.toDateString();
+      }
 
-        if (filters.range === "WEEK") {
-          const firstDay = new Date(today);
-          firstDay.setDate(today.getDate() - today.getDay());
+      if (filters.range === "WEEK") {
+        const firstDay = new Date(today);
+        firstDay.setDate(today.getDate() - today.getDay());
 
-          const lastDay = new Date(firstDay);
-          lastDay.setDate(firstDay.getDate() + 6);
+        const lastDay = new Date(firstDay);
+        lastDay.setDate(firstDay.getDate() + 6);
 
-          rangeMatch = billDate >= firstDay && billDate <= lastDay;
-        }
+        rangeMatch = billDate >= firstDay && billDate <= lastDay;
+      }
 
-        if (filters.range === "YEAR") {
-          rangeMatch = billDate.getFullYear() === today.getFullYear();
-        }
+      if (filters.range === "YEAR") {
+        rangeMatch = billDate.getFullYear() === today.getFullYear();
+      }
 
-        const customDateMatch = filters.date
-          ? billDate.toDateString() === new Date(filters.date).toDateString()
-          : true;
+      const customDateMatch = filters.date
+        ? billDate.toDateString() === new Date(filters.date).toDateString()
+        : true;
 
-        return statusMatch && rangeMatch && customDateMatch;
-      })
+      return statusMatch && rangeMatch && customDateMatch;
+    })
     : [];
+
+  const handleDelete = async () => {
+    try {
+      setDeleteLoading(true);
+      const res = await dispatch(deleteBill(deleteBillId)).unwrap();
+      toast.success(res.message);
+      const response = await dispatch(
+        getBillByCustomerId(customerId)
+      ).unwrap();
+      const billList = response?.data?.bills || [];
+      setBills(billList);
+      const paid = billList.filter(
+        (b) => b.paymentStatus === "PAID"
+      ).length;
+
+      const partial = billList.filter(
+        (b) => b.paymentStatus === "PARTIAL"
+      ).length;
+
+      const notPaid = billList.filter(
+        (b) => b.paymentStatus === "NOT_PAID"
+      ).length;
+
+      setSummary({
+        paid,
+        partial,
+        notPaid,
+      });
+
+      setDeleteModal(false);
+      setDeleteBillId(null);
+
+    } catch (err) {
+      toast.error(err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
     <div className="customer-details-container">
@@ -167,7 +210,7 @@ const CustomerDetails = ({ backToList, customerId,setSelectedCustomerId }) => {
                   <tbody>
                     {(bill.items || []).map((item, i) => (
                       <tr key={i}>
-                        <td>{item.itemName}</td>
+                        <td className="item-name">{item.itemName}</td>
                         <td>{item.quantity}</td>
                         <td>₹{item.price}</td>
                         <td>{item.gst}%</td>
@@ -200,32 +243,48 @@ const CustomerDetails = ({ backToList, customerId,setSelectedCustomerId }) => {
                 </div>
               </div>
               <div className="customer-details-bill-footer">
-                <button
-                  className="btn btn-p btn-sm me-3"
-                  onClick={() => {
-                    setSelectedBill(bill);
-                    setOpenModal(true);
-                  }}
-                >
-                  <IoPrintOutline />
-                  Print
-                </button>
-                {bill.dueAmount > 0 ? (
-                  <button
-                    className="btn btn-g btn-sm"
-                    onClick={() => {
-                      setSelectedBill(bill);
-                      setOpenPayModal(true);
-                    }}
-                  >
-                    <MdOutlinePayments /> Pay Due Amount
-                  </button>
-                ) : (
-                  <span className="paid-label">
-                    <IoIosCheckmarkCircleOutline size={20} className="me-1" />
-                    Fully Paid
-                  </span>
-                )}
+                <div className="customer-details-bill-footer-inner">
+                  <div>
+                    <button
+                      className="btn bg-danger text-white btn-sm me-3 d-flex align-items-center"
+                      onClick={() => {
+                        setDeleteBillId(bill._id);
+                        setDeleteModal(true);
+                      }}
+                    >
+                      <MdDeleteOutline />
+                      Delete Bill
+                    </button>
+                  </div>
+                  <div className="customer-details-bill-footer-actions">
+                    <button
+                      className="btn btn-p btn-sm"
+                      onClick={() => {
+                        setSelectedBill(bill);
+                        setOpenModal(true);
+                      }}
+                    >
+                      <IoPrintOutline />
+                      Print
+                    </button>
+                    {bill.dueAmount > 0 ? (
+                      <button
+                        className="btn btn-g btn-sm"
+                        onClick={() => {
+                          setSelectedBill(bill);
+                          setOpenPayModal(true);
+                        }}
+                      >
+                        <MdOutlinePayments /> Pay Due Amount
+                      </button>
+                    ) : (
+                      <span className="paid-label">
+                        <IoIosCheckmarkCircleOutline size={20} className="me-1" />
+                        Fully Paid
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))
@@ -260,6 +319,44 @@ const CustomerDetails = ({ backToList, customerId,setSelectedCustomerId }) => {
           customerId={customerId}
           setCustomerId={setSelectedCustomerId}
         />
+      )}
+      {deleteModal && (
+        <div className="delete-backdrop">
+          <div className="delete-modal">
+            <div className="delete-icon-wrap">
+              <MdDelete className="delete-icon" />
+            </div>
+            <h3 className="delete-title">Delete Bill?</h3>
+            <p className="delete-text">
+              Are you sure you want to delete this bill? This action cannot be
+              undone.
+            </p>
+            <div className="delete-actions">
+              <button
+                className="delete-btn cancel"
+                onClick={() => {
+                  setDeleteModal(false);
+                  setDeleteBillId(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="delete-btn confirm"
+                onClick={handleDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <span className="btn-loader"></span>
+                ) : (
+                  <>
+                    <MdDelete /> Delete
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

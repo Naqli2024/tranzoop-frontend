@@ -191,7 +191,7 @@ const Invoices = () => {
           <thead>
             <tr>
               <th>S.No</th>
-              <th>Customer Name</th>
+              <th>Company Name</th>
               <th>Mobile Number</th>
               <th>Address</th>
               <th>Type</th>
@@ -208,7 +208,7 @@ const Invoices = () => {
               filteredData?.map((item, index) => (
                 <tr>
                   <td>{index + 1}</td>
-                  <td>{item.customerName}</td>
+                  <td>{customerMap[item.customerId]?.companyName || "—"}</td>
                   <td>{customerMap[item.customerId]?.mobile || "—"}</td>
                   <td>{customerMap[item.customerId]?.address || "—"}</td>
                   <td>
