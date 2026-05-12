@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllERP } from "../../../redux/Auth/AuthSlice";
 import { toast } from "react-toastify";
 import Loader from "../../../components/Loader";
+import { MdKeyboardBackspace } from "react-icons/md";
 
 const data = [
   {
@@ -75,6 +76,9 @@ const HomePage = () => {
     <div>
       {loading && <Loader isLoading={loading} />}
       <div className="home-container">
+        <div className="home-back-arrow" onClick={()=>navigateTo('/')}>
+          <MdKeyboardBackspace size={20}/>
+        </div>
         <div className="home-center">
           <h1 className="home-logo">TRANZOOP</h1>
           <p className="home-version">SMART BUSINESS OS · V1.0</p>

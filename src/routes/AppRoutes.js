@@ -18,10 +18,10 @@ import Ledger from "../pages/POS/Ledger/Ledger";
 import Supplier from "../pages/POS/Supplier/Supplier";
 import Payments from "../pages/POS/Payments/Payments";
 import Invoices from "../pages/POS/Invoices/Invoices";
-import Transport from "../pages/Transport/Transport";
 import Settings from "../pages/POS/Settings/Settings";
 import InvoiceModal from "../pages/POS/Payments/InvoiceModal";
 import ScannedInvoice from "../pages/POS/Invoices/ScannedInvoice";
+import LandingPage from "../pages/POS/HomePage/LandingPage";
 
 
 const AppRoutes = () => {
@@ -31,7 +31,7 @@ const AppRoutes = () => {
     "/",
   ];
 
-  const hideHeaderRoutes = ["/","/sign-in/:key","/sign-up/:key","/transport","/invoice/:invNo"];
+  const hideHeaderRoutes = ["/","/platform","/sign-in/:key","/sign-up/:key","/transport","/invoice/:invNo"];
 
   const hideHeader = hideHeaderRoutes.some((route) =>
     matchPath({ path: route, end: true }, location.pathname)
@@ -44,13 +44,13 @@ const AppRoutes = () => {
     <Routes>
         {/* Public Routes */}
         <Route
-          path="/transport"
+          path="/"
           element={
-              <Transport />
+              <LandingPage />
           }
         />
         <Route
-          path="/"
+          path="/platform"
           element={
               <HomePage />
           }
