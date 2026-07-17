@@ -496,7 +496,7 @@ const POS = () => {
             </div>
             <div className="pos-m-sr">
               <span>Subtotal</span>
-              <span>₹{subtotal}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
             {discountAmount > 0 && (
               <div className="pos-m-sr pos-m-disc-r">
@@ -506,30 +506,18 @@ const POS = () => {
             )}
             <div className="pos-m-sr">
               <span>CGST + SGST</span>
-              <span>₹{gstAmount}</span>
+              <span>₹{gstAmount.toFixed(2)}</span>
             </div>
             <div className="pos-m-sr pos-m-grand">
               <span>TOTAL</span>
-              <span>₹{total}</span>
+              <span>₹{total.toFixed(2)}</span>
             </div>
-            {/* <div className="pos-m-pay-grid">
-              {payModes.map((payment, i) => (
-                <div
-                  key={i}
-                  className={`pos-m-pb2 ${selectedPayment === payment.l ? "active" : ""}`}
-                  onClick={() => setSelectedPayment(payment.l)}
-                >
-                  <span className="pos-m-pb2-i">{payment.i}</span>
-                  {payment.l}
-                </div>
-              ))}
-            </div> */}
             <button
               className="pos-m-charge-btn"
               disabled={cart.length === 0}
               onClick={handleBillSubmit}
             >
-              Charge ₹{total}
+              Charge ₹{total.toFixed(2)}
             </button>
             <div className="pos-m-cart-qa mt-2">
               <button className="pos-m-cqa" onClick={handleClearCart}>

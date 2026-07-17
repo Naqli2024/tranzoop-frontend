@@ -218,9 +218,19 @@ const Invoices = () => {
                   </td>
                   <td>{formatDate(item.createdAt)}</td>
                   <td className="text-danger">
-                    ₹{item.dueAmount.toLocaleString("en-IN")}
+                    ₹
+                    {item.dueAmount.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
-                  <td>₹{item.grandTotal.toLocaleString("en-IN")}</td>
+                  <td>
+                    ₹
+                    {item.grandTotal.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </td>
                   <td>
                     <span className={`pay-tag ${item.paymentStatus}`}>
                       {item.paymentStatus.replace("_", " ")}
@@ -244,7 +254,7 @@ const Invoices = () => {
                       onClick={() => {
                         setSelectedBill(item);
                         setOpenBillModal(true);
-                        setMobileNumber(customerMap[item.customerId]?.mobile)
+                        setMobileNumber(customerMap[item.customerId]?.mobile);
                       }}
                     >
                       View

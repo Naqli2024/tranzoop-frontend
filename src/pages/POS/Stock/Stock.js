@@ -189,13 +189,19 @@ const Stock = () => {
                 </td>
                 <td>{i.openingStock}</td>
                 <td className="items-num items-bold">
-                  ₹{i.cost?.toLocaleString("en-IN") || 0}
+                  ₹{i.cost?.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+}) || 0}
                 </td>
                 <td className="items-num items-muted">
                   ₹
                   {(
                     (i.cost || 0) * (i.openingStock || 0)
-                  ).toLocaleString("en-IN")}
+                  ).toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}
                 </td>
                 <td className="items-code">{i.gst}%</td>
               </tr>

@@ -461,7 +461,7 @@ const LandingPage = () => {
     </div>
 
     <div class="landing-home-footer-bottom">
-      <div class="landing-home-footer-copy">© 2025 Tranzoop Technologies. All rights reserved.</div>
+      <div class="landing-home-footer-copy">© 2026 Jr Pixelz Pvt Limited. All rights reserved.</div>
       <div class="landing-home-footer-legal">
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>

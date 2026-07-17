@@ -78,7 +78,7 @@ const SignIn = () => {
       </div>
         </div>
       <button className="sign-in-btn" onClick={handleSubmit}>Login →</button>
-      <div className="sign-in-back-link" onClick={()=>navigateTo('/')}>← Choose different industry</div>
+      <div className="sign-in-back-link" onClick={()=>navigateTo('/platform')}>← Choose different industry</div>
       {/* <div className="sign-in-new-account" onClick={()=>navigateTo(`/sign-up/${key}`)}>Don't have an account? <span>Create one</span></div> */}
       </div>
     </div>

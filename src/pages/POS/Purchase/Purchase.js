@@ -194,9 +194,18 @@ const Purchase = () => {
                       <td>
                         {new Date(p.dueDate).toLocaleDateString("en-GB")}
                       </td>
-                      <td>₹{p.gstTotal.toLocaleString("en-IN")}</td>
-                      <td className="text-danger">₹{p.dueAmount.toLocaleString("en-IN")}</td>
-                      <td>₹{p.grandTotal.toLocaleString("en-IN")}</td>
+                      <td>₹{p.gstTotal.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</td>
+                      <td className="text-danger">₹{p.dueAmount.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</td>
+                      <td>₹{p.grandTotal.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</td>
                       <td>
                         <span
                           className={`wo-tag ${p.paymentStatus === "PAID"
@@ -209,7 +218,10 @@ const Purchase = () => {
                           {p.paymentStatus}
                         </span>
                       </td>
-                      <td>₹{p.grandTotal.toLocaleString("en-IN")}</td>
+                      <td>₹{p.grandTotal.toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}</td>
                       <td>
                         <button
                           className="btn btn-p btn-sm me-3"

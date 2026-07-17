@@ -79,7 +79,7 @@ useEffect(() => {
         const cost = parseFloat(updated.cost) || 0;
 
         if (cost > 0) {
-          updated.margin = (((mrp - cost) / cost) * 100);
+          updated.margin = Number((((mrp - cost) / cost) * 100).toFixed(2));
         } else {
           updated.margin = 0;
         }

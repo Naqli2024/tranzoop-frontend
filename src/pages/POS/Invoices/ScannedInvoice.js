@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 const ScannedInvoice = () => {
   const dispatch = useDispatch();
   const { invNo } = useParams(); 
-
   const [invoiceData, setInvoiceData] = useState(null);
   const [loading, setLoading] = useState(false);
 

@@ -56,7 +56,10 @@ const CustomerLedgerDetails = ({ customerDetails, setCustomerDetails }) => {
           </h3>
           <p>
             Total Balance: ₹
-            {customerDetails.totalBalance?.toLocaleString("en-IN")}
+            {customerDetails.totalBalance?.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </p>
         </div>
         <div className="ledger-header-filters">
@@ -93,19 +96,23 @@ const CustomerLedgerDetails = ({ customerDetails, setCustomerDetails }) => {
               <div>
                 <small>Debit</small>
                 <p className="ledger-debit">
-                  {row.debit ? `₹${row.debit}` : "0"}
+                  {row.debit ? `₹${row.debit.toFixed(2)}` : "0.00"}
                 </p>
               </div>
               <div>
                 <small>Credit</small>
                 <p className="ledger-credit">
-                  {row.credit ? `₹${row.credit}` : "0"}
+                  {row.credit ? `₹${row.credit.toFixed(2)}` : "0.00"}
                 </p>
               </div>
               <div>
                 <small>Balance</small>
                 <p className="ledger-balance">
-                  ₹{row.balance?.toLocaleString("en-IN")}
+                  ₹
+                  {row.balance?.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </p>
               </div>
             </div>

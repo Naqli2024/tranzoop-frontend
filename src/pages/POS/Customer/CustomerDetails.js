@@ -212,9 +212,9 @@ const CustomerDetails = ({ backToList, customerId, setSelectedCustomerId }) => {
                       <tr key={i}>
                         <td className="item-name">{item.itemName}</td>
                         <td>{item.quantity}</td>
-                        <td>₹{item.price}</td>
+                        <td>₹{item.price.toFixed(2)}</td>
                         <td>{item.gst}%</td>
-                        <td>₹{item.total}</td>
+                        <td>₹{item.total.toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -222,23 +222,23 @@ const CustomerDetails = ({ backToList, customerId, setSelectedCustomerId }) => {
                 <div className="customer-details-bill-summary">
                   <p className="wo-value">
                     <span className="wo-label">Sub Total:</span> ₹
-                    {bill.subTotal}
+                    {bill.subTotal.toFixed(2)}
                   </p>
                   <p className="wo-value">
-                    <span className="wo-label">GST:</span> ₹{bill.gstTotal}
+                    <span className="wo-label">GST:</span> ₹{bill.gstTotal.toFixed(2)}
                   </p>
                   <p className="wo-value">
-                    <span className="wo-label">Discount:</span> ₹{bill.discount}
+                    <span className="wo-label">Discount:</span> ₹{bill.discount.toFixed(2)}
                   </p>
                   <p className="wo-value">
                     <span className="wo-label">Grand Total:</span> ₹
-                    {bill.grandTotal}
+                    {bill.grandTotal.toFixed(2)}
                   </p>
                   <p className="wo-value">
-                    <span className="wo-label">Paid:</span> ₹{bill.paidAmount}
+                    <span className="wo-label">Paid:</span> ₹{bill.paidAmount.toFixed(2)}
                   </p>
                   <p className="wo-value due">
-                    <span className="wo-label due">Due:</span> ₹{bill.dueAmount}
+                    <span className="wo-label due">Due:</span> ₹{bill.dueAmount.toFixed(2)}
                   </p>
                 </div>
               </div>

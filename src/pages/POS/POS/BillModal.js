@@ -21,15 +21,15 @@ const BillModal = ({ closeModal, billData, mobileNo }) => {
   }, [dispatch]);
 
   const handleWhatsAppShare = () => {
-  const itemsText =
-    billData?.items
-      ?.map(
-        (item) =>
-          `${item.itemName} - ${item.quantity} x ₹${item.price} = ₹${item.total}`
-      )
-      .join("\n") || "";
+    const itemsText =
+      billData?.items
+        ?.map(
+          (item) =>
+            `${item.itemName} - ${item.quantity} x ₹${item.price} = ₹${item.total}`,
+        )
+        .join("\n") || "";
 
-  const message = `
+    const message = `
 *${userData?.business?.shopName || "Tyre Shop"}*
 ${userData?.business?.address || ""}
 GST: ${userData?.business?.gstNo || "N/A"}
@@ -47,15 +47,15 @@ TOTAL: ₹${billData?.grandTotal}
 
 Thank you ${billData?.customerName || "Customer"}!
 `;
-  if (!mobileNo) {
-    toast.error("Customer phone number missing");
-    return;
-  }
+    if (!mobileNo) {
+      toast.error("Customer phone number missing");
+      return;
+    }
 
-  const url = `https://wa.me/${mobileNo}?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${mobileNo}?text=${encodeURIComponent(message)}`;
 
-  window.open(url, "_blank");
-};
+    window.open(url, "_blank");
+  };
 
   return (
     <div className="bill-overlay">
@@ -64,11 +64,10 @@ Thank you ${billData?.customerName || "Customer"}!
         <div className="bill-header">
           <h2>{userData?.business?.shopName || "Tyre Shop"}</h2>
           <p>
-            {userData?.business?.address || "N/A"} · GST:{userData?.business?.gstNo || "N/A"}
+            {userData?.business?.address || "N/A"} · GST:
+            {userData?.business?.gstNo || "N/A"}
           </p>
-          <span className="bill-no">
-            {billData?.billNo}
-          </span>
+          <span className="bill-no">{billData?.billNo}</span>
         </div>
 
         <div className="bill-divider" />
@@ -80,11 +79,15 @@ Thank you ${billData?.customerName || "Customer"}!
                   <td style={{ width: "40%", wordBreak: "break-word" }}>
                     {item.itemName}
                   </td>
-                  <td style={{ textAlign: "right", width: "25%" }}>
-                    ₹{item.price} × {item.quantity}
+                  <td style={{ textAlign: "right", width: "30%" }}>
+                    ₹{item.price.toFixed(2)} × {item.quantity}
                   </td>
                   <td style={{ textAlign: "right", width: "25%" }}>
-                    ₹{item.total.toLocaleString()}
+                    ₹
+                    {item.total.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                 </tr>
               ))}
@@ -94,27 +97,57 @@ Thank you ${billData?.customerName || "Customer"}!
 
         <div className="bill-tax">
           <span>CGST + SGST</span>
-          <span>₹{billData?.gstTotal}</span>
+          <span>
+            ₹
+            {billData?.gstTotal.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
         </div>
         <div className="bill-divider bold" />
         <div className="bill-summary">
           <span>Subtotal</span>
-          <span>₹{billData?.subTotal}</span>
+          <span>
+            ₹
+            {billData?.subTotal.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
         </div>
 
         {billData?.discount > 0 && (
           <div className="bill-summary">
             <span>Discount</span>
-            <span>−₹{billData?.discount}</span>
+            <span>
+              −₹
+              {billData?.discount.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </span>
           </div>
         )}
         <div className="bill-summary">
-            <span>Due Amount</span>
-            <span>₹{billData?.dueAmount}</span>
-          </div>
+          <span>Due Amount</span>
+          <span>
+            ₹
+            {billData?.dueAmount.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
+        </div>
         <div className="bill-total">
           <span>TOTAL</span>
-          <span>₹{billData?.grandTotal}</span>
+          <span>
+            ₹
+            {billData?.grandTotal.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
         </div>
 
         <div className="bill-footer">

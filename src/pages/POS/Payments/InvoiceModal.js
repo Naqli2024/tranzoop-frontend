@@ -46,7 +46,10 @@ export default function InvoiceModal({ closeModal, invoiceNo }) {
   };
 
   const formatCurrency = (val) => {
-    return Number(val || 0).toLocaleString("en-IN");
+    return Number(val || 0).toLocaleString("en-IN", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
   };
 
   const numberToWords = (num) => {
@@ -140,7 +143,7 @@ export default function InvoiceModal({ closeModal, invoiceNo }) {
   const cgstTotal = totalGST / 2;
   const sgstTotal = totalGST / 2;
 
-  const rawTotal = invoiceData?.summary?.grandTotal || 0;
+  const rawTotal = Number(invoiceData?.summary?.grandTotal || 0);
   const roundedTotal = Math.round(rawTotal);
   const roundOff = Number((roundedTotal - rawTotal).toFixed(2));
 

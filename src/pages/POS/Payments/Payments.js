@@ -223,17 +223,27 @@ const Payments = () => {
                   </td>
                   <td>{formatDate(item.createdAt)}</td>
                   <td className="text-danger">
-                    ₹{item.dueAmount.toLocaleString("en-IN")}
+                    ₹
+                    {item.dueAmount.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
-                  <td>₹{item.grandTotal.toLocaleString("en-IN")}</td>
+                  <td>
+                    ₹
+                    {item.grandTotal.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </td>
                   <td>
                     <span className={`pay-tag ${item.paymentStatus}`}>
                       {item.paymentStatus.replace("_", " ")}
                     </span>
                   </td>
                   <td>
-                    {item.dueAmount !== 0
-                      ? <button
+                    {item.dueAmount !== 0 ? (
+                      <button
                         className="btn btn-sm btn-b"
                         onClick={() => {
                           setSelectedBill(item);
@@ -242,9 +252,15 @@ const Payments = () => {
                       >
                         <MdOutlinePayments /> Pay
                       </button>
-                      : <span className="wo-tag t-ok" style={{ verticalAlign: "middle" }}>
-                        <LuCircleCheckBig size={12} className="me-1" /> {item.paymentStatus}
-                      </span>}
+                    ) : (
+                      <span
+                        className="wo-tag t-ok"
+                        style={{ verticalAlign: "middle" }}
+                      >
+                        <LuCircleCheckBig size={12} className="me-1" />{" "}
+                        {item.paymentStatus}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))

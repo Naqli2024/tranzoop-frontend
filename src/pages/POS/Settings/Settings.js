@@ -7,7 +7,7 @@ import Logo from "../../../assets/images/logo.jpg";
 import { ThemeContext } from '../../../helpers/ThemeContext';
 import { MdOutlineDarkMode } from "react-icons/md";
 import { MdOutlineLightMode } from "react-icons/md";
-import Cookies from "js-cookie"; // ✅ add this
+import Cookies from "js-cookie"; 
 
 const Settings = () => {
   const [userData, setUserData] = useState(null);
@@ -16,7 +16,7 @@ const Settings = () => {
   const dispatch = useDispatch();
   const [activeBrand, setActiveBrand] = useState("tyre");
 
-  // ✅ Load saved theme on mount
+
   useEffect(() => {
     const savedBrand = Cookies.get("brandTheme");
     if (savedBrand) {

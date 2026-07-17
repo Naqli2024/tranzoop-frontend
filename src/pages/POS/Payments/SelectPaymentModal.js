@@ -135,8 +135,14 @@ const SelectPaymentModal = ({
         </div>
         <div className="po-m-pay-container">
           <div className="po-m-pay-t-label">Amount Payable</div>
-          <div className="po-m-pay-t-amt">₹{(totalAmount ?? 0).toLocaleString("en-IN")}</div>
-          <div className="text-danger">Due Amount: ₹{(dueAmount ?? 0).toLocaleString("en-IN")}</div>
+          <div className="po-m-pay-t-amt">₹{(totalAmount ?? 0).toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}</div>
+          <div className="text-danger">Due Amount: ₹{(dueAmount ?? 0).toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}</div>
         </div>
         {paymentType !== "CREDIT" && (
           <div className="po-m-pay-new-container">
@@ -216,14 +222,14 @@ const SelectPaymentModal = ({
 
                 <div className="po-m-pay-row mb-2">
                   <span>Due Amount</span>
-                  <span>₹{payable}</span>
+                  <span>₹{payable.toFixed(2)}</span>
                 </div>
 
                 <hr className="my-2" />
 
                 <div className="po-m-pay-row">
                   <span>Total Paid</span>
-                  <span>₹{totalPaid}</span>
+                  <span>₹{totalPaid.toFixed(2)}</span>
                 </div>
 
                 <div className="po-m-pay-row">
@@ -234,7 +240,7 @@ const SelectPaymentModal = ({
                       fontWeight: 600,
                     }}
                   >
-                    ₹{remaining > 0 ? remaining : 0}
+                    ₹{remaining > 0 ? remaining.toFixed(2) : 0}
                   </span>
                 </div>
               </div>
