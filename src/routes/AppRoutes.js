@@ -2,7 +2,6 @@ import { Routes, Route, useLocation, matchPath } from "react-router-dom";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import Header from "../components/Header/Header";
-import HomePage from "../pages/POS/HomePage/HomePage";
 import SignIn from "../pages/POS/Auth/SignIn";
 import SignUp from "../pages/POS/Auth/SignUp";
 import POSMain from "../pages/POS/POS/POSMain";
@@ -31,7 +30,7 @@ const AppRoutes = () => {
     "/",
   ];
 
-  const hideHeaderRoutes = ["/","/platform","/sign-in/:key","/sign-up/:key","/transport","/invoice/:invNo"];
+  const hideHeaderRoutes = ["/","/platform","/login","/sign-up/:key","/transport","/invoice/:invNo"];
 
   const hideHeader = hideHeaderRoutes.some((route) =>
     matchPath({ path: route, end: true }, location.pathname)
@@ -50,13 +49,7 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/platform"
-          element={
-              <HomePage />
-          }
-        />
-        <Route
-          path="sign-in/:key"
+          path="login"
           element={
               <SignIn />
           }

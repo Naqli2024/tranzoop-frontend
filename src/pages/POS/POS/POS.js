@@ -288,7 +288,7 @@ const POS = () => {
               <IoSearchOutline className="pos-m-search-icon" />
               <input
                 className="pos-m-scan-inp"
-                placeholder="Scan barcode / type item name…"
+                placeholder="Search item..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />

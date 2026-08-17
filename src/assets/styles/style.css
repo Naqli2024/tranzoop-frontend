@@ -76,30 +76,6 @@
   --accent-dim2: #8a5cf62f;
   --accent-glow2: rgba(85, 11, 245, 0.3);
 }
- /* :root[data-industry="tyre"] {
-  --accent2: #FF6B35;
-}
-
-:root[data-industry="seafood"] {
-  --accent2: #00C4FF;
-  --text-accent: #00C4FF;
-}
-
-:root[data-industry="supermarket"] {
-  --accent2: #22C55E;
-  --text-accent: #22C55E;
-}
-
-:root[data-industry="restaurant"] {
-  --accent2: #F59E0B;
-  --text-accent: #F59E0B;
-}
-
-:root[data-industry="custom"] {
-  --accent2: #8B5CF6;
-  --text-accent: #8B5CF6;
-} */
-
 * {
   letter-spacing: 0.5px;
   font-size: 14px;
@@ -107,10 +83,8 @@
   padding: 0;
   box-sizing: border-box;
 }
-html,
-body {
-  height: 100%;
-  overflow: hidden;
+html {
+  scroll-behavior: smooth;
 }
 body {
   font-family: var(--font);
@@ -119,8 +93,8 @@ body {
   font-size: 13px;
 }
 ::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--sub);
@@ -2048,7 +2022,7 @@ body {
   text-transform: uppercase;
 }
 .sign-in-date {
-  color: var(--muted);
+  color: var(--text);
 }
 .header-right-content {
   display: flex;
@@ -2254,6 +2228,7 @@ body {
 .pos-sidebar-item:hover,
 .pos-sidebar-item.active {
   background: var(--accent-dim2);
+  border: 1px solid var(--accent2);
 }
 .pos-sidebar-link:hover .pos-sidebar-link-icon,
 .pos-sidebar-link:hover .pos-sidebar-link-label,
@@ -5121,6 +5096,10 @@ select.sel {
   border-radius: 10px;
   border: 1px solid var(--border);
 }
+.dash-list {
+  height: 360px;
+  overflow-y: scroll;
+}
 .dash-stock-panel {
   background: var(--panel);
   padding: 14px;
@@ -5856,7 +5835,7 @@ select.sel {
   font-size: 13px;
 }
 .customer-details-btn-print:hover {
-  background: #0056b3;
+  background: #0056b3; 
 }
 .customer-details-items-empty {
   text-align: center;

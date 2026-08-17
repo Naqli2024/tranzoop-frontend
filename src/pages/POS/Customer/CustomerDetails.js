@@ -218,7 +218,7 @@ const CustomerDetails = ({ backToList, customerId, setSelectedCustomerId }) => {
                       </tr>
                     ))}
                   </tbody>
-                </table>
+                </table> 
                 <div className="customer-details-bill-summary">
                   <p className="wo-value">
                     <span className="wo-label">Sub Total:</span> ₹

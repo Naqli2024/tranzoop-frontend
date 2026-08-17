@@ -195,17 +195,17 @@ const Purchase = () => {
                         {new Date(p.dueDate).toLocaleDateString("en-GB")}
                       </td>
                       <td>₹{p.gstTotal.toLocaleString("en-IN", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}</td>
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}</td>
                       <td className="text-danger">₹{p.dueAmount.toLocaleString("en-IN", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}</td>
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}</td>
                       <td>₹{p.grandTotal.toLocaleString("en-IN", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}</td>
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}</td>
                       <td>
                         <span
                           className={`wo-tag ${p.paymentStatus === "PAID"
@@ -219,9 +219,9 @@ const Purchase = () => {
                         </span>
                       </td>
                       <td>₹{p.grandTotal.toLocaleString("en-IN", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}</td>
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}</td>
                       <td>
                         <button
                           className="btn btn-p btn-sm me-3"
@@ -233,18 +233,18 @@ const Purchase = () => {
                         >
                           <MdOutlineRemoveRedEye /> View
                         </button>
-                        {p.dueAmount!==0
-                        ? <button
-                          className="btn btn-b btn-sm"
-                          onClick={() => {
-                            setSelectedPurchase(p);
-                            setOpenPayModal(true);
-                          }}>
-                          <MdOutlinePayments /> Pay
-                        </button>
-                        : <span className="wo-tag t-ok" style={{ verticalAlign: "middle" }}>
-                          <LuCircleCheckBig size={12} className="me-1"/> {p.paymentStatus}
-                        </span>}
+                        {p.dueAmount !== 0
+                          ? <button
+                            className="btn btn-b btn-sm"
+                            onClick={() => {
+                              setSelectedPurchase(p);
+                              setOpenPayModal(true);
+                            }}>
+                            <MdOutlinePayments /> Pay
+                          </button>
+                          : <span className="wo-tag t-ok" style={{ verticalAlign: "middle" }}>
+                            <LuCircleCheckBig size={12} className="me-1" /> {p.paymentStatus}
+                          </span>}
                       </td>
                     </tr>)
                   )
@@ -257,19 +257,19 @@ const Purchase = () => {
                 )}
               </tbody>
             </table>
-          </div> 
+          </div>
         </div>
       )}
       {openPayModal &&
-        <SelectPaymentModal 
-        closeModal={setOpenPayModal} 
-        purchaseId={selectedPurchase?._id}
-        onSuccess={(res) => {
+        <SelectPaymentModal
+          closeModal={setOpenPayModal}
+          purchaseId={selectedPurchase?._id}
+          onSuccess={(res) => {
             setPaymentResponse(res);
             setOpenPaymentSuccessModal(true);
-        }}
-        totalAmount={selectedPurchase?.grandTotal}
-        dueAmount={selectedPurchase?.dueAmount}
+          }}
+          totalAmount={selectedPurchase?.grandTotal}
+          dueAmount={selectedPurchase?.dueAmount}
         />}
       {openPaymentSuccessModal && (
         <PaymentSuccessModal
@@ -279,7 +279,7 @@ const Purchase = () => {
           purchaseId={selectedPurchase?._id}
           setPurchaseId={setSelectedPurchase}
         />
-      )}  
+      )}
     </div>
   );
 };
