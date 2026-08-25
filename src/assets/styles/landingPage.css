@@ -1,17 +1,4 @@
-html {
-  scroll-behavior: smooth;
-}
-
-html,
-body {
-  min-height: 100%;
-  margin: 0;
-}
-
-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
 .tyre-lp {
   --bg: #0b1220;
   --bg-soft: #070d18;
@@ -33,8 +20,13 @@ body {
   background: var(--bg);
   color: var(--text);
   color-scheme: dark;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  overflow-x: hidden;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  /* overflow-x: hidden; */
 }
 
 .tyre-lp[data-theme="light"] {
@@ -56,13 +48,34 @@ body {
   color-scheme: light;
 }
 
+.tyre-lp {
+  overflow-y: scroll !important;
+}
+
 .tyre-lp *,
 .tyre-lp *::before,
-.tyre-lp *::after { box-sizing: border-box; }
-.tyre-lp img, .tyre-lp svg { display: block; }
-.tyre-lp a { color: inherit; text-decoration: none; }
-.tyre-lp button { font: inherit; cursor: pointer; }
-.tyre-lp h1, .tyre-lp h2, .tyre-lp h3, .tyre-lp h4, .tyre-lp p { margin: 0; }
+.tyre-lp *::after {
+  box-sizing: border-box;
+}
+.tyre-lp img,
+.tyre-lp svg {
+  display: block;
+}
+.tyre-lp a {
+  color: inherit;
+  text-decoration: none;
+}
+.tyre-lp button {
+  font: inherit;
+  cursor: pointer;
+}
+.tyre-lp h1,
+.tyre-lp h2,
+.tyre-lp h3,
+.tyre-lp h4,
+.tyre-lp p {
+  margin: 0;
+}
 
 .tyre-lp-shell {
   width: 100%;
@@ -87,6 +100,7 @@ body {
   line-height: 1.15;
   letter-spacing: -0.01em;
   margin-top: 10px;
+  color: var(--text);
 }
 
 .tyre-lp-sub {
@@ -101,34 +115,74 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(22px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--d, 0ms);
 }
-.reveal.is-in { opacity: 1; transform: none; }
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-  .tyre-lp-spin, .tyre-lp-badge-dot, .tyre-lp-hero-glow { animation: none !important; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .tyre-lp-spin,
+  .tyre-lp-badge-dot,
+  .tyre-lp-hero-glow {
+    animation: none !important;
+  }
 }
 
-@keyframes tyre-spin { to { transform: rotate(360deg); } }
+@keyframes tyre-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @keyframes tyre-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 168, 37, 0.45); }
-  50% { box-shadow: 0 0 0 6px rgba(249, 168, 37, 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(249, 168, 37, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(249, 168, 37, 0);
+  }
 }
 @keyframes tyre-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 @keyframes tyre-drift {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
-  50% { transform: translate3d(0, -24px, 0) scale(1.08); opacity: 0.85; }
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(0, -24px, 0) scale(1.08);
+    opacity: 0.85;
+  }
 }
 @keyframes tread-scroll {
-  from { background-position: 0 0; }
-  to { background-position: 120px 0; }
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 120px 0;
+  }
 }
 
-.tyre-lp-spin { animation: tyre-spin 9s linear infinite; }
+.tyre-lp-spin {
+  animation: tyre-spin 9s linear infinite;
+}
 
 /* ---------- header ---------- */
 .tyre-lp-header {
@@ -159,13 +213,21 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: conic-gradient(from 90deg, var(--accent), var(--accent-2), var(--accent));
+  background: conic-gradient(
+    from 90deg,
+    var(--accent),
+    var(--accent-2),
+    var(--accent)
+  );
   display: grid;
   place-items: center;
   color: #14100a;
   flex-shrink: 0;
 }
-.tyre-lp-logo-mark svg { width: 19px; height: 19px; }
+.tyre-lp-logo-mark svg {
+  width: 19px;
+  height: 19px;
+}
 .tranzoop-text {
   display: block;
   font-family: Cambria, Georgia, "Times New Roman", serif;
@@ -191,7 +253,10 @@ body {
   font-weight: 500;
   color: var(--text-muted);
 }
-.tyre-lp-nav a { position: relative; transition: color 0.2s ease; }
+.tyre-lp-nav a {
+  position: relative;
+  transition: color 0.2s ease;
+}
 .tyre-lp-nav a::after {
   content: "";
   position: absolute;
@@ -204,10 +269,19 @@ body {
   transform-origin: right;
   transition: transform 0.3s ease;
 }
-.tyre-lp-nav a:hover { color: var(--text); }
-.tyre-lp-nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+.tyre-lp-nav a:hover {
+  color: var(--text);
+}
+.tyre-lp-nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
 
-.tyre-lp-header-actions { display: flex; align-items: center; gap: 12px; }
+.tyre-lp-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .tyre-lp-theme-toggle {
   width: 44px;
   height: 44px;
@@ -217,10 +291,20 @@ body {
   color: var(--text);
   display: grid;
   place-items: center;
-  transition: border-color 0.2s ease, color 0.2s ease, transform 0.3s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.3s ease;
 }
-.tyre-lp-theme-toggle:hover { border-color: var(--accent); color: var(--accent); transform: rotate(25deg); }
-.tyre-lp-theme-toggle svg { width: 18px; height: 18px; }
+.tyre-lp-theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: rotate(25deg);
+}
+.tyre-lp-theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
 
 .tyre-lp-btn {
   display: inline-flex;
@@ -234,22 +318,39 @@ body {
   border: 1px solid transparent;
   white-space: nowrap;
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 }
-.tyre-lp-btn:hover { transform: translateY(-2px); }
+.tyre-lp-btn:hover {
+  transform: translateY(-2px);
+}
 .tyre-lp-btn-primary {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #14100a;
   box-shadow: 0 10px 28px -10px rgba(249, 168, 37, 0.55);
 }
-.tyre-lp-btn-primary:hover { filter: brightness(1.07); }
-.tyre-lp-btn-ghost {
-  border-color: var(--border);
-  background: transparent;
-  color: var(--text);
+.tyre-lp-btn-primary:hover {
+  filter: brightness(1.07);
 }
-.tyre-lp-btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-.tyre-lp-btn-lg { padding: 15px 28px; min-height: 50px; font-size: 15.5px; border-radius: 12px; }
+.tyre-lp-btn-ghost {
+  border-color: var(--accent);
+  background: transparent;
+  color: var(--accent)!important;
+}
+.tyre-lp-btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent) !important;
+}
+.tyre-lp-btn-lg {
+  padding: 15px 28px;
+  min-height: 50px;
+  font-size: 15.5px;
+  border-radius: 12px;
+}
 
 /* ---------- hero ---------- */
 .tyre-lp-hero {
@@ -266,11 +367,18 @@ body {
   width: 900px;
   height: 620px;
   margin-left: -450px;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(249, 168, 37, 0.22), transparent 70%);
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(249, 168, 37, 0.22),
+    transparent 70%
+  );
   pointer-events: none;
   animation: tyre-drift 12s ease-in-out infinite;
 }
-.tyre-lp-hero-inner { position: relative; text-align: center; }
+.tyre-lp-hero-inner {
+  position: relative;
+  text-align: center;
+}
 .tyre-lp-badge {
   display: inline-flex;
   align-items: center;
@@ -301,7 +409,10 @@ body {
   max-width: 900px;
   margin: 0 auto;
 }
-.tyre-lp-hero h1 span { color: var(--accent); font-size: clamp(34px, 5.4vw, 62px);}
+.tyre-lp-hero h1 span {
+  color: var(--accent);
+  font-size: clamp(34px, 5.4vw, 62px);
+}
 .tyre-lp-hero > .tyre-lp-shell > .tyre-lp-hero-inner p {
   max-width: 660px;
   margin: 22px auto 0;
@@ -325,12 +436,20 @@ body {
   border: 1px solid var(--glass-border);
   box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.9);
 }
-.tyre-lp-hero-media img { width: 100%; height: auto; object-fit: cover; }
+.tyre-lp-hero-media img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
 .tyre-lp-hero-media::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(7, 13, 24, 0.85), rgba(7, 13, 24, 0.05) 55%);
+  background: linear-gradient(
+    to top,
+    rgba(7, 13, 24, 0.85),
+    rgba(7, 13, 24, 0.05) 55%
+  );
   pointer-events: none;
 }
 .tyre-lp-hero-stats {
@@ -395,18 +514,31 @@ body {
   place-items: center;
   color: var(--accent);
   box-shadow: 0 8px 20px -12px var(--shadow);
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
 }
-.tyre-lp-flow-step:hover .tyre-lp-flow-icon { transform: translateY(-4px) scale(1.05); }
-.tyre-lp-flow-icon svg { width: 26px; height: 26px; }
+.tyre-lp-flow-step:hover .tyre-lp-flow-icon {
+  transform: translateY(-4px) scale(1.05);
+}
+.tyre-lp-flow-icon svg {
+  width: 26px;
+  height: 26px;
+}
 .tyre-lp-flow-step.is-hero .tyre-lp-flow-icon {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   color: #14100a;
   border-color: transparent;
   animation: tyre-float 4s ease-in-out infinite;
 }
-.tyre-lp-flow-label { font-size: 14px; font-weight: 600; }
-.tyre-lp-flow-sub { font-size: 13px; color: var(--text-muted); }
+.tyre-lp-flow-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tyre-lp-flow-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+}
 .tyre-lp-flow-step:not(:first-child)::before {
   content: "";
   position: absolute;
@@ -414,7 +546,11 @@ body {
   right: calc(50% + 29px);
   width: calc(100% - 58px);
   height: 2px;
-  background-image: radial-gradient(circle, var(--accent) 1.2px, transparent 1.4px);
+  background-image: radial-gradient(
+    circle,
+    var(--accent) 1.2px,
+    transparent 1.4px
+  );
   background-size: 7px 2px;
   background-repeat: repeat-x;
   opacity: 0.7;
@@ -424,18 +560,41 @@ body {
 .tyre-lp-tread-rule {
   width: 100%;
   height: 3px;
-  background: repeating-linear-gradient(90deg, var(--accent) 0, var(--accent) 5px, transparent 5px, transparent 13px);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--accent) 0,
+    var(--accent) 5px,
+    transparent 5px,
+    transparent 13px
+  );
   opacity: 0.3;
   animation: tread-scroll 6s linear infinite;
 }
 
 /* ---------- sections ---------- */
-.tyre-lp-section { position: relative; padding: 84px 0; background: var(--bg); }
-.tyre-lp-section-alt { background: var(--bg-alt); }
-.tyre-lp-section-head { text-align: center; max-width: 660px; margin: 0 auto 56px; }
-.tyre-lp-section-head .tyre-lp-sub { margin-left: auto; margin-right: auto; }
+.tyre-lp-section {
+  position: relative;
+  padding: 84px 0;
+  background: var(--bg);
+}
+.tyre-lp-section-alt {
+  background: var(--bg-alt);
+}
+.tyre-lp-section-head {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 56px;
+}
+.tyre-lp-section-head .tyre-lp-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
 
-.tyre-lp-module-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.tyre-lp-module-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
 .tyre-lp-module-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -444,7 +603,10 @@ body {
   position: relative;
   overflow: hidden;
   box-shadow: 0 10px 30px -20px var(--shadow);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 .tyre-lp-module-card::after {
   content: "";
@@ -453,7 +615,11 @@ body {
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(249, 168, 37, 0.18), transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(249, 168, 37, 0.18),
+    transparent 70%
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -462,7 +628,9 @@ body {
   border-color: rgba(249, 168, 37, 0.4);
   box-shadow: 0 24px 44px -30px rgba(249, 168, 37, 0.45);
 }
-.tyre-lp-module-card:hover::after { opacity: 1; }
+.tyre-lp-module-card:hover::after {
+  opacity: 1;
+}
 .tyre-lp-module-card.is-featured {
   background: linear-gradient(160deg, var(--surface-2), var(--surface));
   border-color: rgba(249, 168, 37, 0.35);
@@ -478,15 +646,24 @@ body {
   margin-bottom: 16px;
   transition: transform 0.3s ease;
 }
-.tyre-lp-module-card:hover .tyre-lp-module-icon { transform: rotate(-8deg) scale(1.08); }
-.tyre-lp-module-icon svg { width: 22px; height: 22px; }
+.tyre-lp-module-card:hover .tyre-lp-module-icon {
+  transform: rotate(-8deg) scale(1.08);
+}
+.tyre-lp-module-icon svg {
+  width: 22px;
+  height: 22px;
+}
 .tyre-lp-module-card h3 {
   font-family: "Space Grotesk", sans-serif;
   font-size: 17px;
   font-weight: 600;
   margin-bottom: 8px;
 }
-.tyre-lp-module-card p { color: var(--text-muted); font-size: 14px; line-height: 1.55; }
+.tyre-lp-module-card p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
 
 /* ---------- work order ---------- */
 .tyre-lp-workorder {
@@ -509,7 +686,12 @@ body {
   margin-top: 10px;
   letter-spacing: -0.01em;
 }
-.tyre-lp-chip-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.tyre-lp-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
 .tyre-lp-chip {
   display: inline-flex;
   align-items: center;
@@ -520,10 +702,19 @@ body {
   border: 1px solid var(--glass-border);
   font-size: 13px;
   font-weight: 500;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
-.tyre-lp-chip:hover { transform: translateY(-2px); border-color: rgba(249, 168, 37, 0.5); }
-.tyre-lp-chip svg { width: 14px; height: 14px; color: var(--accent); }
+.tyre-lp-chip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(249, 168, 37, 0.5);
+}
+.tyre-lp-chip svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+}
 
 .tyre-lp-workorder-visual {
   background: var(--bg-alt);
@@ -537,9 +728,22 @@ body {
   margin-bottom: 22px;
   border: 1px solid var(--glass-border);
 }
-.tyre-lp-workorder-photo img { width: 100%; height: 180px; object-fit: cover; }
-.tyre-lp-mini-flow { display: flex; flex-direction: column; }
-.tyre-lp-mini-flow-step { display: flex; align-items: center; gap: 12px; padding: 10px 0; position: relative; }
+.tyre-lp-workorder-photo img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.tyre-lp-mini-flow {
+  display: flex;
+  flex-direction: column;
+}
+.tyre-lp-mini-flow-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  position: relative;
+}
 .tyre-lp-mini-flow-step:not(:last-child)::after {
   content: "";
   position: absolute;
@@ -547,7 +751,13 @@ body {
   top: 38px;
   width: 2px;
   height: calc(100% - 12px);
-  background: repeating-linear-gradient(to bottom, var(--accent) 0, var(--accent) 4px, transparent 4px, transparent 9px);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--accent) 0,
+    var(--accent) 4px,
+    transparent 4px,
+    transparent 9px
+  );
   opacity: 0.5;
 }
 .tyre-lp-mini-flow-dot {
@@ -565,20 +775,44 @@ body {
   font-weight: 600;
   z-index: 1;
 }
-.tyre-lp-mini-flow-text { font-size: 14px; font-weight: 500; }
+.tyre-lp-mini-flow-text {
+  font-size: 14px;
+  font-weight: 500;
+}
 
 /* ---------- business flow ---------- */
-.tyre-lp-bizflow-wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: center; }
+.tyre-lp-bizflow-wrap {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
 .tyre-lp-bizflow-photo {
   border-radius: 22px;
   overflow: hidden;
   border: 1px solid var(--glass-border);
   box-shadow: 0 30px 60px -45px rgba(0, 0, 0, 0.9);
 }
-.tyre-lp-bizflow-photo img { width: 100%; height: 100%; max-height: 540px; object-fit: cover; }
-.tyre-lp-bizflow { display: flex; flex-direction: column; }
-.tyre-lp-bizflow-row { display: flex; gap: 22px; align-items: flex-start; position: relative; padding-bottom: 34px; }
-.tyre-lp-bizflow-row:last-child { padding-bottom: 0; }
+.tyre-lp-bizflow-photo img {
+  width: 100%;
+  height: 100%;
+  max-height: 540px;
+  object-fit: cover;
+}
+.tyre-lp-bizflow {
+  display: flex;
+  flex-direction: column;
+}
+.tyre-lp-bizflow-row {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: 34px;
+}
+.tyre-lp-bizflow-row:last-child {
+  padding-bottom: 0;
+}
 .tyre-lp-bizflow-row:not(:last-child)::before {
   content: "";
   position: absolute;
@@ -586,7 +820,13 @@ body {
   top: 58px;
   width: 2px;
   height: calc(100% - 50px);
-  background: repeating-linear-gradient(to bottom, var(--accent) 0, var(--accent) 4px, transparent 4px, transparent 10px);
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--accent) 0,
+    var(--accent) 4px,
+    transparent 4px,
+    transparent 10px
+  );
   opacity: 0.55;
 }
 .tyre-lp-bizflow-num {
@@ -602,10 +842,25 @@ body {
   box-shadow: 0 8px 20px -14px var(--shadow);
   transition: transform 0.25s ease;
 }
-.tyre-lp-bizflow-row:hover .tyre-lp-bizflow-num { transform: scale(1.06); border-color: rgba(249, 168, 37, 0.5); }
-.tyre-lp-bizflow-num svg { width: 24px; height: 24px; }
-.tyre-lp-bizflow-body h4 { font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 600; margin-top: 6px; }
-.tyre-lp-bizflow-body p { color: var(--text-muted); font-size: 14.5px; margin-top: 4px; }
+.tyre-lp-bizflow-row:hover .tyre-lp-bizflow-num {
+  transform: scale(1.06);
+  border-color: rgba(249, 168, 37, 0.5);
+}
+.tyre-lp-bizflow-num svg {
+  width: 24px;
+  height: 24px;
+}
+.tyre-lp-bizflow-body h4 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+.tyre-lp-bizflow-body p {
+  color: var(--text-muted);
+  font-size: 14.5px;
+  margin-top: 4px;
+}
 .tyre-lp-bizflow-tag {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 11px;
@@ -616,15 +871,24 @@ body {
 }
 
 /* ---------- groups ---------- */
-.tyre-lp-group-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.tyre-lp-group-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
 .tyre-lp-group-card {
   border-radius: 18px;
   border: 1px solid var(--border);
   background: var(--surface);
   padding: 26px;
-  transition: border-color 0.25s ease, transform 0.2s ease;
+  transition:
+    border-color 0.25s ease,
+    transform 0.2s ease;
 }
-.tyre-lp-group-card:hover { transform: translateY(-4px); border-color: rgba(249, 168, 37, 0.35); }
+.tyre-lp-group-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(249, 168, 37, 0.35);
+}
 .tyre-lp-group-card h4 {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 12px;
@@ -643,11 +907,23 @@ body {
   font-weight: 500;
   transition: transform 0.2s ease;
 }
-.tyre-lp-group-item:hover { transform: translateX(4px); }
-.tyre-lp-group-item svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+.tyre-lp-group-item:hover {
+  transform: translateX(4px);
+}
+.tyre-lp-group-item svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
 
 /* ---------- stats / pricing / faq ---------- */
-.tyre-lp-pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: stretch; }
+.tyre-lp-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
 .tyre-lp-price-card {
   border: 1px solid var(--glass-border);
   border-radius: 20px;
@@ -655,14 +931,23 @@ body {
   padding: 30px 26px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease;
 }
-.tyre-lp-price-card:hover { transform: translateY(-5px); border-color: rgba(249, 168, 37, 0.4); }
+.tyre-lp-price-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(249, 168, 37, 0.4);
+}
 .tyre-lp-price-card.is-featured {
   background: linear-gradient(160deg, var(--surface-2), var(--surface));
   border-color: rgba(249, 168, 37, 0.45);
 }
-.tyre-lp-price-name { font-family: "Space Grotesk", sans-serif; font-size: 18px; font-weight: 600; }
+.tyre-lp-price-name {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+}
 .tyre-lp-price-value {
   font-family: "Space Grotesk", sans-serif;
   font-size: 38px;
@@ -670,13 +955,41 @@ body {
   margin-top: 12px;
   color: var(--accent);
 }
-.tyre-lp-price-value small { font-size: 14px; color: var(--text-muted); font-weight: 500; }
-.tyre-lp-price-list { list-style: none; padding: 0; margin: 20px 0 26px; display: grid; gap: 11px; }
-.tyre-lp-price-list li { display: flex; gap: 9px; align-items: center; font-size: 14px; color: var(--text-muted); }
-.tyre-lp-price-list svg { width: 15px; height: 15px; color: var(--accent); flex-shrink: 0; }
-.tyre-lp-price-card .tyre-lp-btn { margin-top: auto; }
+.tyre-lp-price-value small {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.tyre-lp-price-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 26px;
+  display: grid;
+  gap: 11px;
+}
+.tyre-lp-price-list li {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.tyre-lp-price-list svg {
+  width: 15px;
+  height: 15px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.tyre-lp-price-card .tyre-lp-btn {
+  margin-top: auto;
+}
 
-.tyre-lp-faq { max-width: 760px; margin: 0 auto; display: grid; gap: 12px; }
+.tyre-lp-faq {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
 .tyre-lp-faq-item {
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -697,16 +1010,33 @@ body {
   font-weight: 600;
   text-align: left;
 }
-.tyre-lp-faq-q svg { width: 18px; height: 18px; color: var(--accent); transition: transform 0.25s ease; flex-shrink: 0; }
-.tyre-lp-faq-item.is-open .tyre-lp-faq-q svg { transform: rotate(180deg); }
+.tyre-lp-faq-q svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.tyre-lp-faq-item.is-open .tyre-lp-faq-q svg {
+  transform: rotate(180deg);
+}
 .tyre-lp-faq-a {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.3s ease;
 }
-.tyre-lp-faq-item.is-open .tyre-lp-faq-a { grid-template-rows: 1fr; }
-.tyre-lp-faq-a > div { overflow: hidden; }
-.tyre-lp-faq-a p { padding: 0 22px 20px; color: var(--text-muted); font-size: 14.5px; line-height: 1.6; }
+.tyre-lp-faq-item.is-open .tyre-lp-faq-a {
+  grid-template-rows: 1fr;
+}
+.tyre-lp-faq-a > div {
+  overflow: hidden;
+}
+.tyre-lp-faq-a p {
+  padding: 0 22px 20px;
+  color: var(--text-muted);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
 
 /* ---------- CTA ---------- */
 .tyre-lp-cta-band {
@@ -729,9 +1059,19 @@ body {
   position: relative;
   z-index: 2;
 }
-.tyre-lp-cta-band > * { position: relative; z-index: 1; }
-.tyre-lp-cta-band p { margin: 16px auto 30px; }
-.tyre-lp-cta-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.tyre-lp-cta-band > * {
+  position: relative;
+  z-index: 1;
+}
+.tyre-lp-cta-band p {
+  margin: 16px auto 30px;
+}
+.tyre-lp-cta-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 
 /* ---------- footer ---------- */
 .tyre-lp-footer {
@@ -746,8 +1086,18 @@ body {
   padding-bottom: 40px;
   border-bottom: 1px solid var(--border);
 }
-.tyre-lp-footer-about p { color: var(--text-muted); font-size: 14px; line-height: 1.65; margin-top: 16px; max-width: 320px; }
-.tyre-lp-footer-contact { margin-top: 18px; display: grid; gap: 9px; }
+.tyre-lp-footer-about p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.65;
+  margin-top: 16px;
+  max-width: 320px;
+}
+.tyre-lp-footer-contact {
+  margin-top: 18px;
+  display: grid;
+  gap: 9px;
+}
 .tyre-lp-footer-contact a,
 .tyre-lp-footer-contact span {
   display: flex;
@@ -757,8 +1107,15 @@ body {
   color: var(--text-muted);
   transition: color 0.2s ease;
 }
-.tyre-lp-footer-contact a:hover { color: var(--accent); }
-.tyre-lp-footer-contact svg { width: 15px; height: 15px; color: var(--accent); flex-shrink: 0; }
+.tyre-lp-footer-contact a:hover {
+  color: var(--accent);
+}
+.tyre-lp-footer-contact svg {
+  width: 15px;
+  height: 15px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
 .tyre-lp-footer-col h5 {
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   font-size: 11.5px;
@@ -767,9 +1124,24 @@ body {
   color: var(--accent);
   margin: 0 0 16px;
 }
-.tyre-lp-footer-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.tyre-lp-footer-col a { font-size: 14px; color: var(--text-muted); transition: color 0.2s ease, padding-left 0.2s ease; }
-.tyre-lp-footer-col a:hover { color: var(--text); padding-left: 4px; }
+.tyre-lp-footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.tyre-lp-footer-col a {
+  font-size: 14px;
+  color: var(--text-muted);
+  transition:
+    color 0.2s ease,
+    padding-left 0.2s ease;
+}
+.tyre-lp-footer-col a:hover {
+  color: var(--text);
+  padding-left: 4px;
+}
 .tyre-lp-footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -780,7 +1152,10 @@ body {
   color: var(--text-muted);
   font-size: 13px;
 }
-.tyre-lp-footer-social { display: flex; gap: 10px; }
+.tyre-lp-footer-social {
+  display: flex;
+  gap: 10px;
+}
 .tyre-lp-footer-social a {
   width: 36px;
   height: 36px;
@@ -789,40 +1164,107 @@ body {
   display: grid;
   place-items: center;
   color: var(--text-muted);
-  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
-.tyre-lp-footer-social a:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
-.tyre-lp-footer-social svg { width: 16px; height: 16px; }
+.tyre-lp-footer-social a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.tyre-lp-footer-social svg {
+  width: 16px;
+  height: 16px;
+}
 
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {
-  .tyre-lp-module-grid { grid-template-columns: repeat(3, 1fr); }
-  .tyre-lp-group-grid { grid-template-columns: repeat(2, 1fr); }
-  .tyre-lp-bizflow-wrap { grid-template-columns: 1fr; gap: 36px; }
-  .tyre-lp-footer-top { grid-template-columns: 1fr 1fr; }
+  .tyre-lp-module-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .tyre-lp-group-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tyre-lp-bizflow-wrap {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .tyre-lp-footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 @media (max-width: 900px) {
-  .tyre-lp-nav { display: none; }
-  .tyre-lp-flow { grid-template-columns: repeat(4, 1fr); row-gap: 40px; }
-  .tyre-lp-flow-step:nth-child(4n + 1)::before { display: none; }
-  .tyre-lp-module-grid { grid-template-columns: repeat(2, 1fr); }
-  .tyre-lp-module-card.is-featured { grid-column: span 2; }
-  .tyre-lp-workorder { grid-template-columns: 1fr; padding: 36px 26px; }
-  .tyre-lp-pricing-grid { grid-template-columns: 1fr; }
-  .tyre-lp-hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .tyre-lp-nav {
+    display: none;
+  }
+  .tyre-lp-flow {
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 40px;
+  }
+  .tyre-lp-flow-step:nth-child(4n + 1)::before {
+    display: none;
+  }
+  .tyre-lp-module-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tyre-lp-module-card.is-featured {
+    grid-column: span 2;
+  }
+  .tyre-lp-workorder {
+    grid-template-columns: 1fr;
+    padding: 36px 26px;
+  }
+  .tyre-lp-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+  .tyre-lp-hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (max-width: 700px) {
-  .tyre-lp-shell { padding: 0 20px; }
-  .tyre-lp-header-inner { min-height: 66px; }
-  .tyre-lp-hero { padding: 60px 0 48px; }
-  .tyre-lp-flow { grid-template-columns: repeat(2, 1fr); row-gap: 34px; margin-top: 56px; }
-  .tyre-lp-flow-step:nth-child(2n + 1)::before { display: none; }
-  .tyre-lp-section { padding: 62px 0; }
-  .tyre-lp-module-grid { grid-template-columns: 1fr; }
-  .tyre-lp-module-card.is-featured { grid-column: span 1; }
-  .tyre-lp-group-grid { grid-template-columns: 1fr; }
-  .tyre-lp-cta-band { padding: 44px 22px; border-radius: 20px; }
-  .tyre-lp-footer-top { grid-template-columns: 1fr; gap: 30px; }
-  .tyre-lp-hero-actions { flex-direction: column; }
-  .tyre-lp-hero-actions .tyre-lp-btn { width: 100%; }
+  .tyre-lp-shell {
+    padding: 0 20px;
+  }
+  .tyre-lp-header-inner {
+    min-height: 66px;
+  }
+  .tyre-lp-hero {
+    padding: 60px 0 48px;
+  }
+  .tyre-lp-flow {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 34px;
+    margin-top: 56px;
+  }
+  .tyre-lp-flow-step:nth-child(2n + 1)::before {
+    display: none;
+  }
+  .tyre-lp-section {
+    padding: 62px 0;
+  }
+  .tyre-lp-module-grid {
+    grid-template-columns: 1fr;
+  }
+  .tyre-lp-module-card.is-featured {
+    grid-column: span 1;
+  }
+  .tyre-lp-group-grid {
+    grid-template-columns: 1fr;
+  }
+  .tyre-lp-cta-band {
+    padding: 44px 22px;
+    border-radius: 20px;
+  }
+  .tyre-lp-footer-top {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .tyre-lp-hero-actions {
+    flex-direction: column;
+  }
+  .tyre-lp-hero-actions .tyre-lp-btn {
+    width: 100%;
+  }
 }

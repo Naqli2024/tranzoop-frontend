@@ -18,7 +18,7 @@ const POSMain = () => {
   }, [storedTheme]);
 
   const isDark = theme === "dark";
-  const basePath = "/pos";
+  const basePath = "/";
 
   const isSettingsActive = location.pathname === `${basePath}/settings` || location.pathname.startsWith(`${basePath}/settings`)
 
@@ -28,8 +28,8 @@ const POSMain = () => {
         <div className="pos-sidebar-nav">
           {posTyresItems?.map((item) => {
             const isActive =
-              location.pathname === `${basePath}/${item.path}` ||
-              location.pathname.startsWith(`${basePath}/${item.path}/`);
+              location.pathname === `${basePath}${item.path}` ||
+              location.pathname.startsWith(`${basePath}${item.path}/`);
             return (
               <div className="pos-sidebar-section">
                 <ul className="pos-sidebar-list">

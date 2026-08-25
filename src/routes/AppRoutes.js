@@ -21,16 +21,17 @@ import Settings from "../pages/POS/Settings/Settings";
 import InvoiceModal from "../pages/POS/Payments/InvoiceModal";
 import ScannedInvoice from "../pages/POS/Invoices/ScannedInvoice";
 import LandingPage from "../pages/POS/HomePage/LandingPage";
+import PublicRoutes from "./PublicRoutes";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 
 const AppRoutes = () => {
-  const [theme, setTheme] = useState(Cookies.get("themeMode") || "dark");
   const location = useLocation();
   const publicPaths = [
     "/",
   ];
 
-  const hideHeaderRoutes = ["/","/platform","/login","/sign-up/:key","/transport","/invoice/:invNo"];
+  const hideHeaderRoutes = ["/", "/platform", "/login", "/transport", "/invoice/:invNo"];
 
   const hideHeader = hideHeaderRoutes.some((route) =>
     matchPath({ path: route, end: true }, location.pathname)
@@ -39,114 +40,118 @@ const AppRoutes = () => {
 
   return (
     <>
-    {!hideHeader && <Header />}
-    <Routes>
+      {!hideHeader && <Header />}
+      <Routes>
         {/* Public Routes */}
         <Route
           path="/"
           element={
+            <PublicRoutes>
               <LandingPage />
+            </PublicRoutes>
           }
         />
         <Route
-          path="login"
+          path="/login"
           element={
+            <PublicRoutes>
               <SignIn />
+            </PublicRoutes>
           }
         />
         <Route
-          path="sign-up/:key"
+          path="/invoice/:invNo"
           element={
-              <SignUp />
-          }
-        />
-        <Route
-          path="invoice/:invNo"
-          element={
+            <PublicRoutes>
               <ScannedInvoice />
+            </PublicRoutes>
           }
         />
-        <Route path="/pos" element={<POSMain />}>
-        <Route
-          path="pos"
-          element={
+        <Route element={
+          <ProtectedRoutes>
+            <POSMain />
+          </ProtectedRoutes>
+        }>
+          <Route
+            path="/pos"
+            element={
               <POS />
-          }
-        />
-        <Route
-          path="work-order"
-          element={
-              <WorkOrder/>
-          }
-        />
-        <Route
-          path="dashboard"
-          element={
-              <Dashboard/>
-          }
-        />
-        <Route
-          path="purchase"
-          element={
-              <Purchase/>
-          }
-        />
-        <Route
-          path="supplier"
-          element={
+            }
+          />
+          <Route
+            path="/work-order"
+            element={
+              <WorkOrder />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <Dashboard />
+            }
+          />
+          <Route
+            path="/purchase"
+            element={
+              <Purchase />
+            }
+          />
+          <Route
+            path="/supplier"
+            element={
               <Supplier />
-          }
-        />
-        <Route
-          path="items"
-          element={
-              <Items/>
-          }
-        />
-        <Route
-          path="customer"
-          element={
-              <Customer/>
-          }
-        />
-        <Route
-          path="stock"
-          element={
-              <Stock/>
-          }
-        />
-        <Route
-          path="payments"
-          element={
-              <Payments/>
-          }
-        />
-        <Route
-          path="invoices"
-          element={
-              <Invoices/>
-          }
-        />
-        <Route
-          path="gst"
-          element={
-              <GST/>
-          }
-        />
-        <Route
-          path="ledger"
-          element={
-              <Ledger/>
-          }
-        />
-        <Route
-          path="settings"
-          element={
-              <Settings/>
-          }
-        />
+            }
+          />
+          <Route
+            path="/items"
+            element={
+              <Items />
+            }
+          />
+          <Route
+            path="/customer"
+            element={
+              <Customer />
+            }
+          />
+          <Route
+            path="/stock"
+            element={
+              <Stock />
+            }
+          />
+          <Route
+            path="/payments"
+            element={
+              <Payments />
+            }
+          />
+          <Route
+            path="/invoices"
+            element={
+              <Invoices />
+            }
+          />
+          <Route
+            path="/gst"
+            element={
+              <GST />
+            }
+          />
+          <Route
+            path="/ledger"
+            element={
+              <Ledger />
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Settings />
+            }
+          />
         </Route>
-    </Routes>
+      </Routes>
     </>
   );
 };

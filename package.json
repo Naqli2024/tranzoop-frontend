@@ -2,6 +2,7 @@
   "name": "tranzoop-frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/tyreshop",
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
     "@testing-library/dom": "^10.4.1",

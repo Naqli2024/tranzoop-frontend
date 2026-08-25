@@ -7,7 +7,7 @@ import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/tyreshop">
       <AppRoutes />
       <ToastContainer autoClose={2000} />
     </BrowserRouter>

@@ -32,7 +32,7 @@ const SignIn = () => {
       const response = await dispatch(adminLogin(formData)).unwrap();
       toast.success(response.message);
       setLoading(false);
-      navigateTo('/pos/pos')
+      navigateTo('/pos')
     } catch (error) {
       toast.error(error);
       setLoading(false);

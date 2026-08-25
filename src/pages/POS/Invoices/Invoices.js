@@ -3,14 +3,17 @@ import { IoAdd } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getBillByBusinessId } from "../../../redux/POS/BillSlice";
+import {
+  editBillDate,
+  getBillByBusinessId,
+} from "../../../redux/POS/BillSlice";
 import SelectPaymentModal from "../../POS/Payments/SelectPaymentModal";
 import BillModal from "../POS/BillModal";
 import { getCustomerById } from "../../../redux/POS/CustomerSlice";
 import Invoice from "../Payments/InvoiceModal";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import PaymentSuccessModal from "../../POS/Payments/PaymentSuccessModal";
+import { MdOutlineEdit } from "react-icons/md";
 import Loader from "../../../components/Loader";
 import InvoiceModal from "../Payments/InvoiceModal";
 
@@ -28,21 +31,24 @@ const Invoices = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [mobileNumber, setMobileNumber] = useState();
+  const [editingDateId, setEditingDateId] = useState(null);
+  const [editDate, setEditDate] = useState("");
+  
+useEffect(() => {
+  setLoading(true);
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(getBillByBusinessId())
-      .unwrap()
-      .then((response) => {
-        setPaymentData(response.data || []);
-      })
-      .catch((error) => {
-        toast.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [dispatch]);
+  dispatch(getBillByBusinessId())
+    .unwrap()
+    .then((response) => {
+      setPaymentData(response.data || []);
+    })
+    .catch((error) => {
+      toast.error(error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, [dispatch]);
 
   useEffect(() => {
     if (paymentData.length === 0) return;
@@ -144,6 +150,39 @@ const Invoices = () => {
     saveAs(file, "Payments.xlsx");
   };
 
+  const fetchLatestBills = async () => {
+    try {
+      const response = await dispatch(getBillByBusinessId()).unwrap();
+
+      setPaymentData(response?.data || []);
+    } catch (error) {
+      toast.error(error?.message || error || "Failed to fetch latest bills");
+    }
+  };
+  const handleEditBillDate = async (item) => {
+    if (!editDate) {
+      toast.error("Please select a date");
+      return;
+    }
+
+    try {
+      const response = await dispatch(
+        editBillDate({
+          billNo: item.billNo,
+          date: editDate,
+        }),
+      ).unwrap();
+
+      toast.success(response?.message);
+
+      setEditingDateId(null);
+      setEditDate("");
+      await fetchLatestBills();
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <div className="purchase-container">
       {loading && <Loader isLoading={loading} />}
@@ -216,7 +255,68 @@ const Invoices = () => {
                       {customerMap[item.customerId]?.type || "—"}
                     </span>
                   </td>
-                  <td>{formatDate(item.createdAt)}</td>
+                  <td>
+                    {editingDateId === item._id ? (
+                      <div className="inv-date-edit-wrap">
+                        <input
+                          type="date"
+                          className="inv-date-input"
+                          value={editDate}
+                          onChange={(e) => setEditDate(e.target.value)}
+                        />
+
+                        <button
+                          type="button"
+                          className="inv-date-action inv-date-save"
+                          onClick={() => handleEditBillDate(item)}
+                          title="Save"
+                        >
+                          ✓
+                        </button>
+
+                        <button
+                          type="button"
+                          className="inv-date-action inv-date-cancel"
+                          onClick={() => {
+                            setEditingDateId(null);
+                            setEditDate("");
+                          }}
+                          title="Cancel"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="d-flex align-items-center gap-2">
+                        <div className="inv-date">
+                          {item.dateCorrected
+                            ? formatDate(item.dateCorrected)
+                            : formatDate(item.createdAt)}
+                        </div>
+
+                        <div
+                          className="inv-edit-icon"
+                          onClick={() => {
+                            setEditingDateId(item._id);
+                            setEditDate(
+                              item.dateCorrected
+                                ? new Date(item.dateCorrected)
+                                    .toISOString()
+                                    .split("T")[0]
+                                : item.createdAt
+                                  ? new Date(item.createdAt)
+                                      .toISOString()
+                                      .split("T")[0]
+                                  : "",
+                            );
+                          }}
+                          title="Edit date"
+                        >
+                          <MdOutlineEdit size={12} />
+                        </div>
+                      </div>
+                    )}
+                  </td>
                   <td className="text-danger">
                     ₹
                     {item.dueAmount.toLocaleString("en-IN", {
