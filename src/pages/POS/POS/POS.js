@@ -510,14 +510,14 @@ const POS = () => {
             </div>
             <div className="pos-m-sr pos-m-grand">
               <span>TOTAL</span>
-              <span>₹{total.toFixed(2)}</span>
+              <span>₹{Math.round(total)}</span>
             </div>
             <button
               className="pos-m-charge-btn"
               disabled={cart.length === 0}
               onClick={handleBillSubmit}
             >
-              Charge ₹{total.toFixed(2)}
+              Charge ₹{Math.round(total)}
             </button>
             <div className="pos-m-cart-qa mt-2">
               <button className="pos-m-cqa" onClick={handleClearCart}>
