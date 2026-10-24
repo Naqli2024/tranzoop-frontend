@@ -48,15 +48,15 @@ const SelectPaymentModal = ({
   };
 
   useEffect(() => {
-    if (paymentType === "FULL") {
-      setSelectedMethods(["cash"]);
-      setAmounts({
-        cash: "",
-        upi: "",
-        card: "",
-      });
-    }
-  }, [paymentType, totalAmount]);
+  if (paymentType === "FULL") {
+    setSelectedMethods(["cash"]);
+    setAmounts({
+      cash: String(Math.round(Number(dueAmount ?? totalAmount ?? 0))),
+      upi: "",
+      card: "",
+    });
+  }
+}, [paymentType, totalAmount, dueAmount]);
 
   // const totalPaid = selectedMethods.reduce(
   //   (sum, method) => sum + Number(amounts[method] || 0),
@@ -67,47 +67,51 @@ const SelectPaymentModal = ({
 
   // const remaining = payable - totalPaid;
 
-  const payable = Number(dueAmount ?? totalAmount ?? 0);
+  const payable = Math.round(
+  Number(dueAmount ?? totalAmount ?? 0)
+);
 
-  const totalPaid = selectedMethods.reduce(
-    (sum, method) => sum + Number(amounts[method] || 0),
-    0,
-  );
+const totalPaid = selectedMethods.reduce(
+  (sum, method) =>
+    sum + Math.round(Number(amounts[method] || 0)),
+  0
+);
 
-  // Compare amounts in paise to avoid floating-point precision issues.
-  const payableInPaise = Math.round(payable * 100);
-  const totalPaidInPaise = Math.round(totalPaid * 100);
+// All payment calculations use whole rupees
+const payableInRupees = payable;
+const totalPaidInRupees = totalPaid;
 
-  const remainingInPaise = payableInPaise - totalPaidInPaise;
-  const remaining = remainingInPaise / 100;
+const remaining = Math.max(
+  0,
+  payableInRupees - totalPaidInRupees
+);
 
-  // Debug
-  console.log("Payment Debug:", {
-    totalAmount,
-    dueAmount,
-    payable,
-    selectedMethods,
-    amounts,
-    totalPaid,
-    remaining,
-    exceedsPayable: totalPaid > payable,
-  });
+console.log("Payment Debug:", {
+  totalAmount,
+  dueAmount,
+  payable,
+  selectedMethods,
+  amounts,
+  totalPaid,
+  remaining,
+  exceedsPayable: totalPaidInRupees > payableInRupees,
+});
 
   const handleSubmit = async () => {
     const paymentList = selectedMethods
-      .filter((m) => Number(amounts[m]) > 0)
-      .map((m) => ({
-        method: m,
-        amount: Number(amounts[m]),
-      }));
+  .filter((m) => Number(amounts[m]) > 0)
+  .map((m) => ({
+    method: m,
+    amount: Math.round(Number(amounts[m])),
+  }));
 
     if (paymentType !== "CREDIT" && paymentList.length === 0) {
       return toast.error("Enter payment amount");
     }
 
-    if (totalPaidInPaise > payableInPaise) {
-      return toast.error("Paid amount exceeds payable amount");
-    }
+    if (totalPaidInRupees > payableInRupees) {
+  return toast.error("Paid amount exceeds payable amount");
+}
 
     try {
       setLoading(true);
@@ -160,17 +164,11 @@ const SelectPaymentModal = ({
           <div className="po-m-pay-t-label">Amount Payable</div>
           <div className="po-m-pay-t-amt">
             ₹
-            {(totalAmount ?? 0).toLocaleString("en-IN", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {Math.round(Number(totalAmount ?? 0)).toLocaleString("en-IN")}
           </div>
           <div className="text-danger">
             Due Amount: ₹
-            {(dueAmount ?? 0).toLocaleString("en-IN", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {Math.round(Number(dueAmount ?? 0)).toLocaleString("en-IN")}
           </div>
         </div>
         {paymentType !== "CREDIT" && (
@@ -248,21 +246,21 @@ const SelectPaymentModal = ({
                   amounts[m] ? (
                     <div key={m} className="po-m-pay-row">
                       <span>{m.toUpperCase()}</span>
-                      <span>₹{Number(amounts[m])}</span>
+                      <span>₹{Math.round(Number(amounts[m])).toLocaleString("en-IN")}</span>
                     </div>
                   ) : null,
                 )}
 
                 <div className="po-m-pay-row mb-2">
                   <span>Due Amount</span>
-                  <span>₹{payable.toFixed(2)}</span>
+                  <span>₹{payable.toLocaleString("en-IN")}</span>
                 </div>
 
                 <hr className="my-2" />
 
                 <div className="po-m-pay-row">
                   <span>Total Paid</span>
-                  <span>₹{totalPaid.toFixed(2)}</span>
+                  <span>₹{totalPaid.toLocaleString("en-IN")}</span>
                 </div>
 
                 <div className="po-m-pay-row">
@@ -273,7 +271,7 @@ const SelectPaymentModal = ({
                       fontWeight: 600,
                     }}
                   >
-                    ₹{remaining > 0 ? remaining.toFixed(2) : 0}
+                    ₹{remaining.toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>
