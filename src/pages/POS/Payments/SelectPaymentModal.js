@@ -19,7 +19,7 @@ const SelectPaymentModal = ({
   onSuccess,
   purchaseId,
   totalAmount,
-  dueAmount
+  dueAmount,
 }) => {
   const dispatch = useDispatch();
 
@@ -32,12 +32,11 @@ const SelectPaymentModal = ({
     card: "",
   });
 
-
   const toggleMethod = (method) => {
     setSelectedMethods((prev) =>
       prev.includes(method)
         ? prev.filter((m) => m !== method)
-        : [...prev, method]
+        : [...prev, method],
     );
   };
 
@@ -59,16 +58,40 @@ const SelectPaymentModal = ({
     }
   }, [paymentType, totalAmount]);
 
+  // const totalPaid = selectedMethods.reduce(
+  //   (sum, method) => sum + Number(amounts[method] || 0),
+  //   0
+  // );
+
+  // const payable = dueAmount || totalAmount || 0;
+
+  // const remaining = payable - totalPaid;
+
+  const payable = Number(dueAmount ?? totalAmount ?? 0);
+
   const totalPaid = selectedMethods.reduce(
     (sum, method) => sum + Number(amounts[method] || 0),
-    0
+    0,
   );
 
-  const payable = dueAmount || totalAmount || 0;
+  // Compare amounts in paise to avoid floating-point precision issues.
+  const payableInPaise = Math.round(payable * 100);
+  const totalPaidInPaise = Math.round(totalPaid * 100);
 
-  const remaining = payable - totalPaid;
+  const remainingInPaise = payableInPaise - totalPaidInPaise;
+  const remaining = remainingInPaise / 100;
 
-
+  // Debug
+  console.log("Payment Debug:", {
+    totalAmount,
+    dueAmount,
+    payable,
+    selectedMethods,
+    amounts,
+    totalPaid,
+    remaining,
+    exceedsPayable: totalPaid > payable,
+  });
 
   const handleSubmit = async () => {
     const paymentList = selectedMethods
@@ -82,7 +105,7 @@ const SelectPaymentModal = ({
       return toast.error("Enter payment amount");
     }
 
-    if (totalPaid > payable) {
+    if (totalPaidInPaise > payableInPaise) {
       return toast.error("Paid amount exceeds payable amount");
     }
 
@@ -95,14 +118,14 @@ const SelectPaymentModal = ({
             purchaseId,
             payments: paymentList,
             type: paymentType,
-          })
+          }),
         ).unwrap();
       } else {
         response = await dispatch(
           addPayment({
             billId,
             payments: paymentList,
-          })
+          }),
         ).unwrap();
       }
       toast.success(response.message);
@@ -116,13 +139,13 @@ const SelectPaymentModal = ({
   };
 
   const handleClick = () => {
-  if (paymentType === "CREDIT") {
-    closeModal(false);
-    return;
-  }
+    if (paymentType === "CREDIT") {
+      closeModal(false);
+      return;
+    }
 
-  handleSubmit();
-};
+    handleSubmit();
+  };
 
   return (
     <div className="po-m-overlay">
@@ -135,14 +158,20 @@ const SelectPaymentModal = ({
         </div>
         <div className="po-m-pay-container">
           <div className="po-m-pay-t-label">Amount Payable</div>
-          <div className="po-m-pay-t-amt">₹{(totalAmount ?? 0).toLocaleString("en-IN", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}</div>
-          <div className="text-danger">Due Amount: ₹{(dueAmount ?? 0).toLocaleString("en-IN", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}</div>
+          <div className="po-m-pay-t-amt">
+            ₹
+            {(totalAmount ?? 0).toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
+          <div className="text-danger">
+            Due Amount: ₹
+            {(dueAmount ?? 0).toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
         </div>
         {paymentType !== "CREDIT" && (
           <div className="po-m-pay-new-container">
@@ -153,8 +182,9 @@ const SelectPaymentModal = ({
                   {["FULL", "PARTIAL", "CREDIT"].map((t) => (
                     <button
                       key={t}
-                      className={`po-m-pay-type-btn ${paymentType === t ? "active" : ""
-                        }`}
+                      className={`po-m-pay-type-btn ${
+                        paymentType === t ? "active" : ""
+                      }`}
                       onClick={() => setPaymentType(t)}
                     >
                       {t}
@@ -173,8 +203,9 @@ const SelectPaymentModal = ({
                       <div key={p.label} className="po-m-pay-method-wrapper">
                         {/* Select Button */}
                         <div
-                          className={`po-m-pay-method ${isActive ? "active" : ""
-                            }`}
+                          className={`po-m-pay-method ${
+                            isActive ? "active" : ""
+                          }`}
                           onClick={() => toggleMethod(p.label)}
                         >
                           <div className="po-m-pay-icon">{p.icon}</div>
@@ -184,7 +215,9 @@ const SelectPaymentModal = ({
                         </div>
                         {isActive && (
                           <div className="po-m-pay-input-wrap">
-                            <span className="po-m-pay-input-label">{p.label.toUpperCase()}</span>
+                            <span className="po-m-pay-input-label">
+                              {p.label.toUpperCase()}
+                            </span>
 
                             <div className="po-m-pay-input-box">
                               <span className="po-m-currency">₹</span>
@@ -217,7 +250,7 @@ const SelectPaymentModal = ({
                       <span>{m.toUpperCase()}</span>
                       <span>₹{Number(amounts[m])}</span>
                     </div>
-                  ) : null
+                  ) : null,
                 )}
 
                 <div className="po-m-pay-row mb-2">
@@ -245,7 +278,8 @@ const SelectPaymentModal = ({
                 </div>
               </div>
             </div>
-          </div>)}
+          </div>
+        )}
         {paymentType === "CREDIT" && (
           <div className="text-warning fw-bold mt-2 text-center">
             This bill will be marked as CREDIT (no payment received)
